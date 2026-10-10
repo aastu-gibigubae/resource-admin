@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_colors.dart';
-import '../../../../app/theme/app_text_styles.dart';
 import '../../../../app/router/route_names.dart';
 import '../../providers/splash_provider.dart';
 
@@ -33,74 +32,135 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Bottom-left quarter circle decoration
-          Positioned(
-            bottom: -60,
-            left: -60,
-            child: Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primary.withOpacity(0.08),
+          // ── Bottom-right quarter circle arc (stroked line, light blue) ──
+           Positioned(
+            right: -233,
+            bottom: -233,
+            child: IgnorePointer(
+              child: Container(
+                width: 400,
+                height: 400,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0xFFB8B8B8),
+                    width: 1,
+                  ),
+                ),
               ),
             ),
           ),
-          // Bottom-right dot grid
-          const Positioned(
+          // ── Gold dot grid sits inside the visible arc area ──
+          Positioned(
             bottom: 32,
-            right: 24,
-            child: _DotGrid(),
+            right: 20,
+            child: const _DotGrid(),
           ),
-          // Main content
+
+          // ── Main centered content ──
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const _BookLogo(),
-                const SizedBox(height: 32),
-                const Text('AASTU', style: AppTextStyles.displayLarge),
+                SizedBox(height: screenHeight * 0.04),
+
+                // Book + rays
+                SizedBox(
+                  width: 140,
+                  height: 130,
+                  child: const _BookLogoWidget(),
+                ),
+
+                const SizedBox(height: 24),
+
+                // AASTU
+                const Text(
+                  'AASTU',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.primaryDark,
+                    letterSpacing: 2,
+                    height: 1.15,
+                  ),
+                ),
+
+                // FRESHMAN
                 const Text(
                   'FRESHMAN',
-                  style: AppTextStyles.displayLarge,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.primaryDark,
+                    letterSpacing: 2,
+                    height: 1.15,
+                  ),
                 ),
+
+                const SizedBox(height: 4),
+
+                // RESOURCE APP
                 const Text(
                   'RESOURCE APP',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
                     color: AppColors.accent,
-                    letterSpacing: 1.2,
+                    letterSpacing: 2.5,
                   ),
                 ),
-                const SizedBox(height: 20),
-                const _SplitDivider(),
+
                 const SizedBox(height: 16),
-                Text(
+
+                // Split divider
+                const _SplitDivider(),
+
+                const SizedBox(height: 14),
+
+                // Admin's Page
+                const Text(
                   "Admin's Page",
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w500,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFF555555),
                   ),
                 ),
-                const SizedBox(height: 48),
-                const SizedBox(
-                  width: 40,
-                  height: 40,
+
+                SizedBox(height: screenHeight * 0.10),
+
+                // Loading spinner
+                SizedBox(
+                  width: 34,
+                  height: 34,
                   child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: AppColors.accent,
+                    strokeWidth: 2.0,
+                    color: Colors.grey.shade400,
                   ),
                 ),
-                const SizedBox(height: 12),
+
+                const SizedBox(height: 10),
+
                 Text(
                   'Loading...',
-                  style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade500,
+                  ),
                 ),
+
+                SizedBox(height: screenHeight * 0.06),
               ],
             ),
           ),
@@ -110,140 +170,220 @@ class _SplashPageState extends ConsumerState<SplashPage> {
   }
 }
 
-// --- Book logo widget ---
-class _BookLogo extends StatelessWidget {
-  const _BookLogo();
+// ─── Book logo ────────────────────────────────────────────────────────────────
+
+class _BookLogoWidget extends StatelessWidget {
+  const _BookLogoWidget();
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 120,
-      height: 110,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Sunburst rays behind the book
-          CustomPaint(
-            size: const Size(120, 120),
-            painter: _SunburstPainter(),
-          ),
-          // Book body
-          Positioned(
-            bottom: 8,
-            child: CustomPaint(
-              size: const Size(80, 70),
-              painter: _BookPainter(),
-            ),
-          ),
-        ],
-      ),
+    return CustomPaint(
+      size: const Size(140, 130),
+      painter: _BookWithRaysPainter(),
     );
   }
 }
 
-class _SunburstPainter extends CustomPainter {
+class _BookWithRaysPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.accent.withOpacity(0.7)
-      ..strokeWidth = 2.5
+    final w = size.width;
+    final h = size.height;
+    final mid = w / 2;
+
+    // ── Sunburst rays (top section, ~30% of height) ──
+    final rayPaint = Paint()
+      ..color = const Color(0xFFF9A825)
+      ..strokeWidth = 3.0
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
-    final center = Offset(size.width / 2, size.height / 2);
-    const innerRadius = 30.0;
-    const outerRadius = 52.0;
-    const rayCount = 12;
+    // Ray origin point (above the book spine top)
+    final rayOriginX = mid;
+    final rayOriginY = h * 0.32; // just above book top
 
-    for (int i = 0; i < rayCount; i++) {
-      final angle = (i * 2 * math.pi / rayCount) - math.pi / 2;
-      canvas.drawLine(
-        Offset(center.dx + innerRadius * math.cos(angle),
-            center.dy + innerRadius * math.sin(angle)),
-        Offset(center.dx + outerRadius * math.cos(angle),
-            center.dy + outerRadius * math.sin(angle)),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _BookPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..style = PaintingStyle.fill;
-
-    // Left page
-    paint.color = AppColors.primary;
-    final leftPath = Path()
-      ..moveTo(size.width / 2, 4)
-      ..quadraticBezierTo(size.width * 0.1, 0, 0, 8)
-      ..lineTo(0, size.height - 10)
-      ..quadraticBezierTo(size.width * 0.1, size.height - 14, size.width / 2, size.height - 8)
-      ..close();
-    canvas.drawPath(leftPath, paint);
-
-    // Right page
-    paint.color = AppColors.primaryLight;
-    final rightPath = Path()
-      ..moveTo(size.width / 2, 4)
-      ..quadraticBezierTo(size.width * 0.9, 0, size.width, 8)
-      ..lineTo(size.width, size.height - 10)
-      ..quadraticBezierTo(size.width * 0.9, size.height - 14, size.width / 2, size.height - 8)
-      ..close();
-    canvas.drawPath(rightPath, paint);
-
-    // Spine
-    paint.color = AppColors.primaryDark;
-    canvas.drawRect(
-      Rect.fromCenter(center: Offset(size.width / 2, size.height / 2), width: 4, height: size.height - 4),
-      paint,
+    // Center ray — straight up
+    canvas.drawLine(
+      Offset(rayOriginX, rayOriginY - 8),
+      Offset(rayOriginX, rayOriginY - 30),
+      rayPaint,
+    );
+    // Left ray
+    canvas.drawLine(
+      Offset(rayOriginX - 5, rayOriginY - 7),
+      Offset(rayOriginX - 18, rayOriginY - 26),
+      rayPaint,
+    );
+    // Right ray
+    canvas.drawLine(
+      Offset(rayOriginX + 5, rayOriginY - 7),
+      Offset(rayOriginX + 18, rayOriginY - 26),
+      rayPaint,
     );
 
-    // Bookmark triangle at the bottom
-    paint.color = AppColors.accent;
-    final bookmarkPath = Path()
-      ..moveTo(size.width / 2 - 12, size.height)
-      ..lineTo(size.width / 2 + 12, size.height)
-      ..lineTo(size.width / 2, size.height - 14)
+    // ── Book dimensions (bottom 70% of canvas) ──
+    final bookTop = h * 0.30;
+    final bookBottom = h * 0.92;
+    final bookLeft = w * 0.08;
+    final bookRight = w * 0.92;
+    final bookH = bookBottom - bookTop;
+    final bookW = bookRight - bookLeft;
+
+    // ── Left outer dark blue cover ──
+    final darkBlue = Paint()
+      ..style = PaintingStyle.fill
+      ..color = const Color(0xFF1A237E);
+
+    final leftCover = Path()
+      ..moveTo(mid - 2, bookTop)
+      ..quadraticBezierTo(
+          bookLeft + bookW * 0.08, bookTop + bookH * 0.02,
+          bookLeft, bookTop + bookH * 0.12)
+      ..lineTo(bookLeft, bookBottom - bookH * 0.06)
+      ..quadraticBezierTo(
+          bookLeft + bookW * 0.08, bookBottom,
+          mid - 2, bookBottom - bookH * 0.04)
       ..close();
-    canvas.drawPath(bookmarkPath, paint);
+    canvas.drawPath(leftCover, darkBlue);
+
+    // ── Right outer dark blue cover ──
+    final rightCover = Path()
+      ..moveTo(mid + 2, bookTop)
+      ..quadraticBezierTo(
+          bookRight - bookW * 0.08, bookTop + bookH * 0.02,
+          bookRight, bookTop + bookH * 0.12)
+      ..lineTo(bookRight, bookBottom - bookH * 0.06)
+      ..quadraticBezierTo(
+          bookRight - bookW * 0.08, bookBottom,
+          mid + 2, bookBottom - bookH * 0.04)
+      ..close();
+    canvas.drawPath(rightCover, darkBlue);
+
+    // ── Left inner page (medium blue) ──
+    final leftPagePaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = const Color(0xFF64B5F6);
+
+    final leftPage = Path()
+      ..moveTo(mid - 2, bookTop + bookH * 0.02)
+      ..quadraticBezierTo(
+          bookLeft + bookW * 0.18, bookTop + bookH * 0.01,
+          bookLeft + bookW * 0.12, bookTop + bookH * 0.14)
+      ..lineTo(bookLeft + bookW * 0.12, bookBottom - bookH * 0.10)
+      ..quadraticBezierTo(
+          bookLeft + bookW * 0.18, bookBottom - bookH * 0.04,
+          mid - 2, bookBottom - bookH * 0.06)
+      ..close();
+    canvas.drawPath(leftPage, leftPagePaint);
+
+    // ── Right inner page (lighter blue) ──
+    final rightPagePaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = const Color(0xFF90CAF9);
+
+    final rightPage = Path()
+      ..moveTo(mid + 2, bookTop + bookH * 0.02)
+      ..quadraticBezierTo(
+          bookRight - bookW * 0.18, bookTop + bookH * 0.01,
+          bookRight - bookW * 0.12, bookTop + bookH * 0.14)
+      ..lineTo(bookRight - bookW * 0.12, bookBottom - bookH * 0.10)
+      ..quadraticBezierTo(
+          bookRight - bookW * 0.18, bookBottom - bookH * 0.04,
+          mid + 2, bookBottom - bookH * 0.06)
+      ..close();
+    canvas.drawPath(rightPage, rightPagePaint);
+
+    // ── White/light highlight on right page ──
+    final highlightPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = Colors.white.withAlpha(100);
+    final highlight = Path()
+      ..moveTo(mid + 2, bookTop + bookH * 0.04)
+      ..quadraticBezierTo(
+          bookRight - bookW * 0.26, bookTop + bookH * 0.02,
+          bookRight - bookW * 0.22, bookTop + bookH * 0.16)
+      ..lineTo(bookRight - bookW * 0.22, bookBottom - bookH * 0.14)
+      ..quadraticBezierTo(
+          bookRight - bookW * 0.26, bookBottom - bookH * 0.08,
+          mid + 2, bookBottom - bookH * 0.08)
+      ..close();
+    canvas.drawPath(highlight, highlightPaint);
+
+    // ── Spine ──
+    canvas.drawRect(
+      Rect.fromLTWH(mid - 3, bookTop, 6, bookH - bookH * 0.04),
+      darkBlue,
+    );
+
+    // ── Bottom open-book arc ──
+    final arcPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = const Color(0xFF1565C0)
+      ..strokeWidth = 2.0;
+    canvas.drawArc(
+      Rect.fromLTWH(
+        bookLeft + bookW * 0.08,
+        bookBottom - bookH * 0.22,
+        bookW * 0.84,
+        bookH * 0.26,
+      ),
+      0,
+      math.pi,
+      false,
+      arcPaint,
+    );
+
+    // ── Bookmark triangle ──
+    final bmPaint = Paint()
+      ..style = PaintingStyle.fill
+      ..color = const Color(0xFF1A237E);
+    final bm = Path()
+      ..moveTo(mid - 9, bookBottom + 2)
+      ..lineTo(mid + 9, bookBottom + 2)
+      ..lineTo(mid, bookBottom - bookH * 0.14)
+      ..close();
+    canvas.drawPath(bm, bmPaint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// --- Split divider widget ---
+// ─── Split divider ────────────────────────────────────────────────────────────
+
 class _SplitDivider extends StatelessWidget {
   const _SplitDivider();
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 200,
-      height: 16,
+      width: 160,
+      height: 12,
       child: Stack(
         alignment: Alignment.center,
         children: [
           Row(
             children: [
               Expanded(
-                child: Container(height: 2, color: AppColors.primary),
+                child: Container(
+                  height: 2,
+                  color: const Color(0xFF1A237E),
+                ),
               ),
+              const SizedBox(width: 12),
               Expanded(
-                child: Container(height: 2, color: AppColors.accent),
+                child: Container(
+                  height: 2,
+                  color: const Color(0xFFF9A825),
+                ),
               ),
             ],
           ),
           Container(
-            width: 10,
-            height: 10,
+            width: 8,
+            height: 8,
             decoration: const BoxDecoration(
-              color: AppColors.accent,
+              color: Color(0xFFF9A825),
               shape: BoxShape.circle,
             ),
           ),
@@ -253,7 +393,33 @@ class _SplitDivider extends StatelessWidget {
   }
 }
 
-// --- 4x4 dot grid widget ---
+// ─── Bottom-right arc painter ─────────────────────────────────────────────────
+
+class _ArcPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0x4D90CAF9) // light blue ~30% opacity
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    // Draw a quarter circle arc (top-left quadrant of the circle)
+    // Since the widget is positioned bottom-right off screen,
+    // only the top-left portion is visible — that's the arc line we see
+    canvas.drawArc(
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      math.pi,        // start at left (180°)
+      math.pi / 2,    // sweep 90° to bottom (270°)
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+
 class _DotGrid extends StatelessWidget {
   const _DotGrid();
 
@@ -261,29 +427,27 @@ class _DotGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: List.generate(
-        4,
-        (row) => Padding(
+      children: List.generate(4, (row) {
+        return Padding(
           padding: const EdgeInsets.only(bottom: 6),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: List.generate(
-              4,
-              (col) => Padding(
+            children: List.generate(4, (col) {
+              return Padding(
                 padding: const EdgeInsets.only(right: 6),
                 child: Container(
-                  width: 5,
-                  height: 5,
+                  width: 6,
+                  height: 6,
                   decoration: BoxDecoration(
-                    color: AppColors.dotAccent.withOpacity(0.5),
+                    color: const Color(0xFFF9A825).withAlpha(200),
                     shape: BoxShape.circle,
                   ),
                 ),
-              ),
-            ),
+              );
+            }),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }
