@@ -26,18 +26,23 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: RouteNames.login,
         builder: (context, state) => const AdminLoginPage(),
       ),
+
+      // Forgot password — nested routes under /forgot-password
       GoRoute(
         path: RouteNames.forgotPasswordEmail,
         builder: (context, state) => const ForgotPasswordEmailPage(),
+        routes: [
+          GoRoute(
+            path: 'verify',
+            builder: (context, state) => const ForgotPasswordVerifyPage(),
+          ),
+          GoRoute(
+            path: 'reset',
+            builder: (context, state) => const ResetPasswordPage(),
+          ),
+        ],
       ),
-      GoRoute(
-        path: RouteNames.forgotPasswordVerify,
-        builder: (context, state) => const ForgotPasswordVerifyPage(),
-      ),
-      GoRoute(
-        path: RouteNames.resetPassword,
-        builder: (context, state) => const ResetPasswordPage(),
-      ),
+
       GoRoute(
         path: RouteNames.dashboard,
         builder: (context, state) => const AdminDashboardPage(),
@@ -45,11 +50,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.userManagement,
         builder: (context, state) => const UserManagementPage(),
-      ),
-      GoRoute(
-        path: RouteNames.userDetail,
-        builder: (context, state) =>
-            UserDetailPage(userId: state.pathParameters['id'] ?? ''),
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder: (context, state) =>
+                UserDetailPage(userId: state.pathParameters['id'] ?? ''),
+          ),
+        ],
       ),
       GoRoute(
         path: RouteNames.pendingRequests,
@@ -58,10 +65,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: RouteNames.uploadResources,
         builder: (context, state) => const UploadResourcesPage(),
-      ),
-      GoRoute(
-        path: RouteNames.uploadResult,
-        builder: (context, state) => const UploadResultPage(),
+        routes: [
+          GoRoute(
+            path: 'result',
+            builder: (context, state) => const UploadResultPage(),
+          ),
+        ],
       ),
       GoRoute(
         path: RouteNames.profile,
