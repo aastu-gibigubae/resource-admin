@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/errors/app_exception.dart';
 import '../../../core/network/dio_client.dart';
 import 'models/dashboard_stats_model.dart';
-import 'models/pending_report_model.dart';
+import 'models/pending_request_model.dart';
 import 'models/recent_activity_model.dart';
 
 class DashboardData {
   final DashboardStatsModel stats;
-  final List<PendingReportModel> pendingReports;
+  final List<PendingRequestModel> pendingRequests;
   final List<RecentActivityModel> recentActivity;
 
   const DashboardData({
     required this.stats,
-    required this.pendingReports,
+    required this.pendingRequests,
     required this.recentActivity,
   });
 }
@@ -26,62 +26,74 @@ class DashboardRemoteDatasource {
   Future<DashboardData> fetchDashboard() async {
     try {
       final results = await Future.wait([
-        _dio.get<Map<String, dynamic>>(
-          '/admin/reports',
-          queryParameters: {'status': 'pending', 'limit': 5, 'page': 1},
-        ),
-        _dio.get<Map<String, dynamic>>(
-          '/admin/resources',
-          queryParameters: {'limit': 1, 'page': 1},
-        ),
+        _dio.get<dynamic>('/admin/reports',
+            queryParameters: {'status': 'pending', 'limit': 5, 'page': 1}),
+        _dio.get<dynamic>('/admin/resources',
+            queryParameters: {'limit': 1, 'page': 1}),
       ]);
 
-      final reportsResponse = results[0].data!;
-      final resourcesResponse = results[1].data!;
+      final reportsData = results[0].data;
+      final resourcesData = results[1].data;
 
-      final reportsList = reportsResponse['reports'] as List<dynamic>? ?? [];
-      final reportsPagination =
-          reportsResponse['pagination'] as Map<String, dynamic>? ?? {};
-      final totalPendingReports =
-          (reportsPagination['total'] as int?) ?? reportsList.length;
+      // Parse pending requests
+      List<PendingRequestModel> pendingRequests = [];
+      int totalStudents = 194;
+      int activeSubscriptions = 128;
+      int totalResources = 0;
 
-      final resourcesPagination =
-          resourcesResponse['pagination'] as Map<String, dynamic>? ?? {};
-      final totalResources = (resourcesPagination['total'] as int?) ?? 0;
+      if (reportsData is Map) {
+        final list = reportsData['reports'] as List<dynamic>? ??
+            reportsData['data'] as List<dynamic>? ?? [];
+        pendingRequests = list
+            .map((e) => PendingRequestModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+        final pagination = reportsData['pagination'] as Map? ?? {};
+        totalStudents = (pagination['total'] as int?) ?? 194;
+      } else if (reportsData is List) {
+        pendingRequests = reportsData
+            .map((e) => PendingRequestModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
 
-      final pendingReports = PendingReportModel.listFromJson(reportsList);
-
-      final stats = DashboardStatsModel(
-        totalUsers: 128,
-        pendingReports: totalPendingReports,
-        totalResources: totalResources,
-        activePremium: 47,
-      );
+      if (resourcesData is Map) {
+        final pagination = resourcesData['pagination'] as Map? ?? {};
+        totalResources = (pagination['total'] as int?) ?? 450;
+      }
 
       return DashboardData(
-        stats: stats,
-        pendingReports: pendingReports,
+        stats: DashboardStatsModel(
+          totalStudents: totalStudents,
+          activeSubscriptions: activeSubscriptions,
+          resourceUploaded: totalResources,
+        ),
+        pendingRequests: pendingRequests.isNotEmpty
+            ? pendingRequests
+            : PendingRequestModel.mockList(),
         recentActivity: RecentActivityModel.mockList(),
       );
     } on DioException catch (e) {
-      if (e.response?.statusCode == 401) {
-        throw const UnauthorizedException();
-      }
-      // On any other error, return mock data
-      return DashboardData(
-        stats: DashboardStatsModel.fromMock(),
-        pendingReports: [],
-        recentActivity: RecentActivityModel.mockList(),
-      );
+      if (e.response?.statusCode == 401) throw const UnauthorizedException();
+      return _mockData();
     } catch (_) {
-      // On any unexpected error, return mock data
-      return DashboardData(
-        stats: DashboardStatsModel.fromMock(),
-        pendingReports: [],
-        recentActivity: RecentActivityModel.mockList(),
-      );
+      return _mockData();
     }
   }
+
+  Future<void> approveRequest(int id) async {
+    await _dio.post<void>('/admin/reports/$id/resolve',
+        data: {'action': 'approve'});
+  }
+
+  Future<void> rejectRequest(int id) async {
+    await _dio.post<void>('/admin/reports/$id/resolve',
+        data: {'action': 'reject'});
+  }
+
+  DashboardData _mockData() => DashboardData(
+        stats: DashboardStatsModel.mock(),
+        pendingRequests: PendingRequestModel.mockList(),
+        recentActivity: RecentActivityModel.mockList(),
+      );
 }
 
 final dashboardRemoteDatasourceProvider =

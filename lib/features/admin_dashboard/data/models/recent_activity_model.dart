@@ -1,37 +1,28 @@
 class RecentActivityModel {
   final int id;
-  final String type;
+  final String type; // 'approval' | 'upload' | 'other'
   final String description;
-  final DateTime timestamp;
+  final String timeAgo;
 
   const RecentActivityModel({
     required this.id,
     required this.type,
     required this.description,
-    required this.timestamp,
+    required this.timeAgo,
   });
 
-  static List<RecentActivityModel> mockList() {
-    final now = DateTime.now();
-    return [
-      RecentActivityModel(
-        id: 1,
-        type: 'premium_granted',
-        description: 'Premium granted to student',
-        timestamp: now.subtract(const Duration(hours: 2)),
-      ),
-      RecentActivityModel(
-        id: 2,
-        type: 'report_resolved',
-        description: 'Issue report #12 resolved',
-        timestamp: now.subtract(const Duration(hours: 5)),
-      ),
-      RecentActivityModel(
-        id: 3,
-        type: 'resource_uploaded',
-        description: 'Midterm 2024 uploaded to CS dept',
-        timestamp: now.subtract(const Duration(days: 1)),
-      ),
-    ];
-  }
+  static List<RecentActivityModel> mockList() => const [
+        RecentActivityModel(
+          id: 1,
+          type: 'approval',
+          description: 'Access approved for Sara Ayalew',
+          timeAgo: '10m ago',
+        ),
+        RecentActivityModel(
+          id: 2,
+          type: 'upload',
+          description: 'New resource uploaded: Data Structures Midterm 2024',
+          timeAgo: '50m ago',
+        ),
+      ];
 }
