@@ -7,15 +7,12 @@ import '../../data/models/pending_request_model.dart';
 import '../../data/models/recent_activity_model.dart';
 import '../../providers/dashboard_provider.dart';
 
-// ── Colors (consistent with AppColors) ───────────────────────────────────────
-const _navy = Color(0xFF1A237E);       // AppColors.primaryDark
-const _blue = Color(0xFF1A237E);       // same navy for card 1 bg
+const _navy = Color(0xFF1A237E);
 const _blueLight = Color(0xFFE3F2FD);
 const _greenLight = Color(0xFFE8F5E9);
 const _greenDark = Color(0xFF2E7D32);
 const _greenText = Color(0xFF1B5E20);
-const _blueText = Color(0xFF1A237E);   // navy for card 3 value
-const _blueCardText = Color(0xFF1565C0); // blue for card 3 label/icon
+const _blueCardIcon = Color(0xFF1565C0);
 const _amber = Color(0xFFF9A825);
 const _redOutline = Color(0xFFD32F2F);
 const _avatarBg = Color(0xFFE8EAF6);
@@ -30,6 +27,8 @@ class AdminDashboardPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      // Bottom nav is a Scaffold property — always at the bottom
+      bottomNavigationBar: _BottomNav(),
       body: state.when(
         loading: () => const _Body(isLoading: true),
         error: (e, _) => _Body(
@@ -44,12 +43,9 @@ class AdminDashboardPage extends ConsumerWidget {
           recentActivity: d.recentActivity,
         ),
       ),
-      bottomNavigationBar: _BottomNav(),
     );
   }
 }
-
-// ─── Body ─────────────────────────────────────────────────────────────────────
 
 class _Body extends ConsumerStatefulWidget {
   final bool isLoading;
@@ -96,241 +92,275 @@ class _BodyState extends ConsumerState<_Body> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.error != null) {
+      return Center(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Text(widget.error!, textAlign: TextAlign.center),
+          const SizedBox(height: 12),
+          ElevatedButton(onPressed: widget.onRetry, child: const Text('Retry')),
+        ]),
+      );
+    }
+
     final stats = widget.stats ?? DashboardStatsModel.mock();
     final pending = widget.pendingRequests ?? PendingRequestModel.mockList();
     final activity = widget.recentActivity ?? RecentActivityModel.mockList();
 
-    if (widget.error != null) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(widget.error!, textAlign: TextAlign.center),
-            const SizedBox(height: 12),
-            ElevatedButton(
-                onPressed: widget.onRetry, child: const Text('Retry')),
-          ],
-        ),
-      );
-    }
-
-    return CustomScrollView(
-      slivers: [
-        // ── App bar (taller to allow card overlap) ──
-        SliverAppBar(
-          backgroundColor: _navy,
-          pinned: true,
-          expandedHeight: 160,
-          automaticallyImplyLeading: false,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: IconButton(
-                icon: const Icon(Icons.person_add_alt_1_outlined,
-                    color: Colors.white, size: 24),
-                onPressed: () {},
-              ),
-            ),
-          ],
-          flexibleSpace: FlexibleSpaceBar(
-            background: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 56, 60),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
-                    Text(
-                      'Dashboard',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
-                        height: 1.1,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Overview of payment requests and subscription\nstatus.',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 13,
-                        height: 1.4,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+    return Column(
+      children: [
+        // ── Navy header + overlapping cards ──
+        _Header(
+          isLoading: widget.isLoading,
+          stats: stats,
         ),
 
-        SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ── Stat cards (overlaid on navy app bar) ──
-              Transform.translate(
-                offset: const Offset(0, -28),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                      // Card 1 — Navy blue
-                      Expanded(
-                        child: _StatCard(
-                          bgColor: _navy,
-                          iconWidget: const Icon(Icons.people,
-                              color: Colors.white, size: 24),
-                          iconBgColor: Colors.white24,
-                          label: 'Total students',
-                          labelColor: Colors.white70,
-                          value: widget.isLoading
-                              ? '...'
-                              : stats.totalStudents.toString(),
-                          valueColor: Colors.white,
+        // ── Scrollable content below ──
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+
+                // Pending Payment Requests
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Pending Payment Requests',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: _navy,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      // Card 2 — Light green
-                      Expanded(
-                        child: _StatCard(
-                          bgColor: _greenLight,
-                          iconWidget: Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFA5D6A7),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
+                      GestureDetector(
+                        onTap: () =>
+                            Navigator.of(context).pushNamed('/pending-requests'),
+                        child: const Text(
+                          'View all',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: _blueCardIcon,
                           ),
-                          iconBgColor: Colors.transparent,
-                          label: 'Active\nSubscriptions',
-                          labelColor: _greenDark,
-                          value: widget.isLoading
-                              ? '...'
-                              : stats.activeSubscriptions.toString(),
-                          valueColor: _greenText,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      // Card 3 — Light blue
-                      Expanded(
-                        child: _StatCard(
-                          bgColor: _blueLight,
-                          iconWidget: const Icon(Icons.folder,
-                              color: _blueCardText, size: 24),
-                          iconBgColor: Colors.transparent,
-                          label: 'Resource\nUploaded',
-                          labelColor: _blueCardText,
-                          value: widget.isLoading
-                              ? '...'
-                              : stats.resourceUploaded.toString(),
-                          valueColor: _blueText,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
-              // ── Pending Payment Requests header ──
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Pending Payment Requests',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: _navy,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => context.go(RouteNames.pendingRequests),
-                      child: const Text(
-                        'View all',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: _blue,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                if (widget.isLoading)
+                  const Center(
+                      child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: CircularProgressIndicator(color: _navy),
+                  ))
+                else if (pending.isEmpty)
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: Text('No pending requests',
+                        style: TextStyle(color: Colors.grey)),
+                  )
+                else
+                  ...pending.take(5).map((r) => _PendingCard(
+                        request: r,
+                        isApproving: _approving.contains(r.id),
+                        isRejecting: _rejecting.contains(r.id),
+                        onApprove: () => _approve(r.id),
+                        onReject: () => _reject(r.id),
+                      )),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 20),
 
-              // ── Pending request cards ──
-              if (widget.isLoading)
-                const Center(child: CircularProgressIndicator())
-              else if (pending.isEmpty)
+                // Recent Activity
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                  child: Text('No pending requests',
-                      style: TextStyle(color: Colors.grey)),
-                )
-              else
-                ...pending.take(5).map((r) => _PendingCard(
-                      request: r,
-                      isApproving: _approving.contains(r.id),
-                      isRejecting: _rejecting.contains(r.id),
-                      onApprove: () => _approve(r.id),
-                      onReject: () => _reject(r.id),
-                    )),
-
-              const SizedBox(height: 20),
-
-              // ── Recent Activity ──
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Recent Activity',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: _navy,
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Recent Activity',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: _navy,
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
 
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: _cardBorder),
-                ),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: activity.length,
-                  separatorBuilder: (_, __) => const Divider(
-                    height: 1,
-                    indent: 16,
-                    endIndent: 16,
-                    color: Color(0xFFEEEEEE),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _cardBorder),
                   ),
-                  itemBuilder: (_, i) => _ActivityRow(activity: activity[i]),
+                  child: Column(
+                    children: activity.asMap().entries.map((e) {
+                      return Column(children: [
+                        _ActivityRow(activity: e.value),
+                        if (e.key < activity.length - 1)
+                          const Divider(
+                              height: 1,
+                              indent: 16,
+                              endIndent: 16,
+                              color: Color(0xFFEEEEEE)),
+                      ]);
+                    }).toList(),
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 30),
-            ],
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
       ],
+    );
+  }
+}
+
+// ─── Header with overlapping stat cards ──────────────────────────────────────
+// Uses a Stack: navy Container behind, cards positioned to overlap the bottom
+
+class _Header extends StatelessWidget {
+  final bool isLoading;
+  final DashboardStatsModel stats;
+
+  const _Header({required this.isLoading, required this.stats});
+
+  @override
+  Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top;
+    // Navy section height + card overlap
+    const navyHeight = 130.0;
+    const cardHeight = 110.0;
+    const overlap = 30.0;
+    const totalHeight = navyHeight + cardHeight - overlap;
+
+    return SizedBox(
+      height: topPadding + totalHeight,
+      child: Stack(
+        children: [
+          // Navy background (top portion)
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: topPadding + navyHeight,
+            child: Container(
+              color: _navy,
+              padding: EdgeInsets.fromLTRB(16, topPadding + 8, 16, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Top row: title + icon
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox.shrink(),
+                      IconButton(
+                        icon: const Icon(Icons.person_add_alt_1_outlined,
+                            color: Colors.white, size: 24),
+                        onPressed: () {},
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Dashboard',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Overview of payment requests and subscription\nstatus.',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12.5,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Stat cards — overlapping the navy bottom
+          Positioned(
+            bottom: 0,
+            left: 12,
+            right: 12,
+            height: cardHeight,
+            child: Row(
+              children: [
+                // Card 1 — navy
+                Expanded(
+                  child: _StatCard(
+                    bgColor: _navy,
+                    border: Border.all(color: Colors.white24),
+                    iconWidget: const Icon(Icons.people,
+                        color: Colors.white, size: 22),
+                    iconBg: Colors.white24,
+                    label: 'Total students',
+                    labelColor: Colors.white70,
+                    value: isLoading ? '...' : stats.totalStudents.toString(),
+                    valueColor: Colors.white,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // Card 2 — light green
+                Expanded(
+                  child: _StatCard(
+                    bgColor: _greenLight,
+                    border: Border.all(color: const Color(0xFFC8E6C9)),
+                    iconWidget: Container(
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFA5D6A7),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    iconBg: Colors.transparent,
+                    label: 'Active\nSubscriptions',
+                    labelColor: _greenDark,
+                    value:
+                        isLoading ? '...' : stats.activeSubscriptions.toString(),
+                    valueColor: _greenText,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // Card 3 — light blue
+                Expanded(
+                  child: _StatCard(
+                    bgColor: _blueLight,
+                    border: Border.all(color: const Color(0xFFBBDEFB)),
+                    iconWidget: const Icon(Icons.folder,
+                        color: _blueCardIcon, size: 22),
+                    iconBg: Colors.transparent,
+                    label: 'Resource\nUploaded',
+                    labelColor: _blueCardIcon,
+                    value:
+                        isLoading ? '...' : stats.resourceUploaded.toString(),
+                    valueColor: _navy,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -339,8 +369,9 @@ class _BodyState extends ConsumerState<_Body> {
 
 class _StatCard extends StatelessWidget {
   final Color bgColor;
+  final BoxBorder border;
   final Widget iconWidget;
-  final Color iconBgColor;
+  final Color iconBg;
   final String label;
   final Color labelColor;
   final String value;
@@ -348,8 +379,9 @@ class _StatCard extends StatelessWidget {
 
   const _StatCard({
     required this.bgColor,
+    required this.border,
     required this.iconWidget,
-    required this.iconBgColor,
+    required this.iconBg,
     required this.label,
     required this.labelColor,
     required this.value,
@@ -363,43 +395,35 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(12),
+        border: border,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icon area — same size across all cards
-          SizedBox(
-            width: 36,
-            height: 36,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: iconBgColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Center(child: iconWidget),
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(8),
             ),
+            child: Center(child: iconWidget),
           ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 10.5,
-              color: labelColor,
-              fontWeight: FontWeight.w500,
-              height: 1.3,
-            ),
-          ),
+          const SizedBox(height: 6),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 10,
+                  color: labelColor,
+                  fontWeight: FontWeight.w500,
+                  height: 1.3)),
           const SizedBox(height: 3),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: valueColor,
-              height: 1.1,
-            ),
-          ),
+          Text(value,
+              style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: valueColor,
+                  height: 1.1)),
         ],
       ),
     );
@@ -428,20 +452,18 @@ class _PendingCard extends StatelessWidget {
     final busy = isApproving || isRejecting;
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: _cardBorder),
       ),
-      padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Row 1: avatar + name/email + pending badge
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Initials avatar — rounded square
               Container(
                 width: 44,
                 height: 44,
@@ -450,42 +472,29 @@ class _PendingCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
-                  child: Text(
-                    request.initials,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: _navy,
-                    ),
-                  ),
+                  child: Text(request.initials,
+                      style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: _navy)),
                 ),
               ),
               const SizedBox(width: 10),
-              // Name + email
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      request.studentName,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: _navy,
-                      ),
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
-                      request.email,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF777777),
-                      ),
-                    ),
+                    Text(request.studentName,
+                        style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: _navy)),
+                    Text(request.email,
+                        style: const TextStyle(
+                            fontSize: 12, color: Color(0xFF777777))),
                   ],
                 ),
               ),
-              // Pending badge — amber outlined
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -493,40 +502,27 @@ class _PendingCard extends StatelessWidget {
                   border: Border.all(color: _amber),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: const Text(
-                  'Pending',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: _amber,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                child: const Text('Pending',
+                    style: TextStyle(
+                        fontSize: 11,
+                        color: _amber,
+                        fontWeight: FontWeight.w600)),
               ),
             ],
           ),
-
           const SizedBox(height: 8),
-
-          // Row 2: ref + amount
           Text(
             'Ref: ${request.refNumber}  •  Amount: ${request.amount}',
             style: const TextStyle(fontSize: 12, color: Color(0xFF555555)),
           ),
-
           const SizedBox(height: 2),
-
-          // Row 3: submitted
           Text(
             'Submitted: ${request.submittedAt}',
             style: const TextStyle(fontSize: 12, color: Color(0xFF888888)),
           ),
-
           const SizedBox(height: 12),
-
-          // Row 4: buttons
           Row(
             children: [
-              // Approve Access — green outlined pill
               Expanded(
                 child: SizedBox(
                   height: 36,
@@ -536,8 +532,7 @@ class _PendingCard extends StatelessWidget {
                       foregroundColor: _greenDark,
                       side: const BorderSide(color: _greenDark),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                          borderRadius: BorderRadius.circular(20)),
                       padding: EdgeInsets.zero,
                     ),
                     child: isApproving
@@ -545,18 +540,14 @@ class _PendingCard extends StatelessWidget {
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(
-                                strokeWidth: 2, color: _greenDark),
-                          )
-                        : const Text(
-                            'Approve Access',
+                                strokeWidth: 2, color: _greenDark))
+                        : const Text('Approve Access',
                             style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w600),
-                          ),
+                                fontSize: 12, fontWeight: FontWeight.w600)),
                   ),
                 ),
               ),
               const SizedBox(width: 10),
-              // Reject — red outlined pill
               Expanded(
                 child: SizedBox(
                   height: 36,
@@ -566,8 +557,7 @@ class _PendingCard extends StatelessWidget {
                       foregroundColor: _redOutline,
                       side: const BorderSide(color: _redOutline),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                          borderRadius: BorderRadius.circular(20)),
                       padding: EdgeInsets.zero,
                     ),
                     child: isRejecting
@@ -575,13 +565,10 @@ class _PendingCard extends StatelessWidget {
                             width: 16,
                             height: 16,
                             child: CircularProgressIndicator(
-                                strokeWidth: 2, color: _redOutline),
-                          )
-                        : const Text(
-                            'Reject',
+                                strokeWidth: 2, color: _redOutline))
+                        : const Text('Reject',
                             style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w600),
-                          ),
+                                fontSize: 12, fontWeight: FontWeight.w600)),
                   ),
                 ),
               ),
@@ -602,14 +589,13 @@ class _ActivityRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isUpload = activity.type == 'upload';
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            isUpload
+            activity.type == 'upload'
                 ? Icons.upload_rounded
                 : Icons.check_circle_outline_rounded,
             size: 18,
@@ -617,23 +603,16 @@ class _ActivityRow extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              activity.description,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF222222),
-              ),
-            ),
+            child: Text(activity.description,
+                style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF222222))),
           ),
           const SizedBox(width: 10),
-          Text(
-            activity.timeAgo,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFF888888),
-            ),
-          ),
+          Text(activity.timeAgo,
+              style: const TextStyle(
+                  fontSize: 12, color: Color(0xFF888888))),
         ],
       ),
     );
@@ -650,7 +629,7 @@ class _BottomNav extends ConsumerWidget {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFE0E0E0), width: 1)),
+        border: Border(top: BorderSide(color: Color(0xFFE0E0E0))),
       ),
       child: SafeArea(
         top: false,
@@ -659,29 +638,25 @@ class _BottomNav extends ConsumerWidget {
           child: Row(
             children: [
               _NavItem(
-                icon: Icons.home_filled,
-                label: 'Home',
-                active: true,
-                onTap: () => context.go(RouteNames.dashboard),
-              ),
+                  icon: Icons.home_filled,
+                  label: 'Home',
+                  active: true,
+                  onTap: () => context.go(RouteNames.dashboard)),
               _NavItem(
-                icon: Icons.people_outline_rounded,
-                label: 'Users',
-                active: false,
-                onTap: () => context.go(RouteNames.userManagement),
-              ),
+                  icon: Icons.people_outline_rounded,
+                  label: 'Users',
+                  active: false,
+                  onTap: () => context.go(RouteNames.userManagement)),
               _NavItem(
-                icon: Icons.folder_outlined,
-                label: 'Resources',
-                active: false,
-                onTap: () => context.go(RouteNames.uploadResources),
-              ),
+                  icon: Icons.folder_outlined,
+                  label: 'Resources',
+                  active: false,
+                  onTap: () => context.go(RouteNames.uploadResources)),
               _NavItem(
-                icon: Icons.person_outline_rounded,
-                label: 'Profile',
-                active: false,
-                onTap: () => context.go(RouteNames.profile),
-              ),
+                  icon: Icons.person_outline_rounded,
+                  label: 'Profile',
+                  active: false,
+                  onTap: () => context.go(RouteNames.profile)),
             ],
           ),
         ),
@@ -715,15 +690,12 @@ class _NavItem extends StatelessWidget {
           children: [
             Icon(icon, color: color, size: 26),
             const SizedBox(height: 3),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                color: color,
-                fontWeight:
-                    active ? FontWeight.w700 : FontWeight.w400,
-              ),
-            ),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 11,
+                    color: color,
+                    fontWeight:
+                        active ? FontWeight.w700 : FontWeight.w400)),
           ],
         ),
       ),
