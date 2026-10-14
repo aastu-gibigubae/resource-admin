@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/models/pending_report_model.dart';
+import '../../../../../core/widgets/app_button.dart';
 
 class PendingReportTile extends StatelessWidget {
   final PendingReportModel report;
@@ -51,15 +52,11 @@ class PendingReportTile extends StatelessWidget {
       subtitle: Text(
         'Resource #${report.resourceId} • ${_timeAgo(report.createdAt)}',
       ),
-      trailing: ElevatedButton(
+      trailing: AppButton(
+        label: 'Resolve',
         onPressed: isResolving ? null : onResolve,
-        child: isResolving
-            ? const SizedBox(
-                width: 12,
-                height: 12,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
-            : const Text('Resolve'),
+        isLoading: isResolving,
+        isFullWidth: false,
       ),
     );
   }
