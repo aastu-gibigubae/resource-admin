@@ -40,6 +40,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       body: Stack(
         children: [
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
           // ── Bottom-right quarter circle arc (stroked line, light blue) ──
            Positioned(
             right: -233,
@@ -67,6 +68,8 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
           // ── Main centered content ──
 =======
+=======
+>>>>>>> Stashed changes
           // Shared bottom-right decoration
           const BottomDecoration(),
 
@@ -80,12 +83,15 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                 SizedBox(height: screenHeight * 0.04),
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 // Book + rays
                 SizedBox(
                   width: 140,
                   height: 130,
                   child: const _BookLogoWidget(),
 =======
+=======
+>>>>>>> Stashed changes
                 // Book logo with rays
                 SizedBox(
                   width: 140,
@@ -93,13 +99,19 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                   child: CustomPaint(
                     painter: _BookWithRaysPainter(),
                   ),
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                 ),
 
                 const SizedBox(height: 24),
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 // AASTU
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                 const Text(
@@ -115,7 +127,10 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                 ),
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 // FRESHMAN
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                 const Text(
@@ -133,7 +148,10 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                 const SizedBox(height: 4),
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 // RESOURCE APP
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                 const Text(
@@ -150,7 +168,10 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                 const SizedBox(height: 16),
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 // Split divider
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                 const _SplitDivider(),
@@ -158,7 +179,10 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                 const SizedBox(height: 14),
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 // Admin's Page
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                 const Text(
@@ -174,7 +198,10 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                 SizedBox(height: screenHeight * 0.10),
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 // Loading spinner
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
                 SizedBox(
@@ -207,6 +234,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // ─── Book logo ────────────────────────────────────────────────────────────────
 
 class _BookLogoWidget extends StatelessWidget {
@@ -225,6 +253,10 @@ class _BookLogoWidget extends StatelessWidget {
 // ─── Book with rays painter ───────────────────────────────────────────────────
 
 >>>>>>> Stashed changes
+=======
+// ─── Book with rays painter ───────────────────────────────────────────────────
+
+>>>>>>> Stashed changes
 class _BookWithRaysPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
@@ -233,7 +265,11 @@ class _BookWithRaysPainter extends CustomPainter {
     final mid = w / 2;
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     // ── Sunburst rays (top section, ~30% of height) ──
+=======
+    // ── Sunburst rays ──
+>>>>>>> Stashed changes
 =======
     // ── Sunburst rays ──
 >>>>>>> Stashed changes
@@ -244,11 +280,18 @@ class _BookWithRaysPainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     // Ray origin point (above the book spine top)
     final rayOriginX = mid;
     final rayOriginY = h * 0.32; // just above book top
 
     // Center ray — straight up
+=======
+    final rayOriginX = mid;
+    final rayOriginY = h * 0.32;
+
+    // Center ray
+>>>>>>> Stashed changes
 =======
     final rayOriginX = mid;
     final rayOriginY = h * 0.32;
@@ -274,7 +317,11 @@ class _BookWithRaysPainter extends CustomPainter {
     );
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     // ── Book dimensions (bottom 70% of canvas) ──
+=======
+    // ── Book dimensions ──
+>>>>>>> Stashed changes
 =======
     // ── Book dimensions ──
 >>>>>>> Stashed changes
@@ -286,13 +333,17 @@ class _BookWithRaysPainter extends CustomPainter {
     final bookW = bookRight - bookLeft;
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     // ── Left outer dark blue cover ──
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     final darkBlue = Paint()
       ..style = PaintingStyle.fill
       ..color = const Color(0xFF1A237E);
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     final leftCover = Path()
       ..moveTo(mid - 2, bookTop)
@@ -327,6 +378,19 @@ class _BookWithRaysPainter extends CustomPainter {
       ..close();
     canvas.drawPath(leftCover, darkBlue);
 
+=======
+    // Left outer cover
+    final leftCover = Path()
+      ..moveTo(mid - 2, bookTop)
+      ..quadraticBezierTo(bookLeft + bookW * 0.08, bookTop + bookH * 0.02,
+          bookLeft, bookTop + bookH * 0.12)
+      ..lineTo(bookLeft, bookBottom - bookH * 0.06)
+      ..quadraticBezierTo(
+          bookLeft + bookW * 0.08, bookBottom, mid - 2, bookBottom - bookH * 0.04)
+      ..close();
+    canvas.drawPath(leftCover, darkBlue);
+
+>>>>>>> Stashed changes
     // Right outer cover
     final rightCover = Path()
       ..moveTo(mid + 2, bookTop)
@@ -334,11 +398,15 @@ class _BookWithRaysPainter extends CustomPainter {
           bookRight, bookTop + bookH * 0.12)
       ..lineTo(bookRight, bookBottom - bookH * 0.06)
       ..quadraticBezierTo(bookRight - bookW * 0.08, bookBottom,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           mid + 2, bookBottom - bookH * 0.04)
       ..close();
     canvas.drawPath(rightCover, darkBlue);
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     // ── Left inner page (medium blue) ──
     final leftPagePaint = Paint()
@@ -392,6 +460,8 @@ class _BookWithRaysPainter extends CustomPainter {
 
     // ── Spine ──
 =======
+=======
+>>>>>>> Stashed changes
     // Left inner page
     final leftPage = Path()
       ..moveTo(mid - 2, bookTop + bookH * 0.02)
@@ -429,12 +499,16 @@ class _BookWithRaysPainter extends CustomPainter {
         highlight, Paint()..color = Colors.white.withAlpha(100)..style = PaintingStyle.fill);
 
     // Spine
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     canvas.drawRect(
       Rect.fromLTWH(mid - 3, bookTop, 6, bookH - bookH * 0.04),
       darkBlue,
     );
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     // ── Bottom open-book arc ──
     final arcPaint = Paint()
@@ -459,6 +533,8 @@ class _BookWithRaysPainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..color = const Color(0xFF1A237E);
 =======
+=======
+>>>>>>> Stashed changes
     // Bottom arc
     canvas.drawArc(
       Rect.fromLTWH(bookLeft + bookW * 0.08, bookBottom - bookH * 0.22,
@@ -471,6 +547,9 @@ class _BookWithRaysPainter extends CustomPainter {
     );
 
     // Bookmark triangle
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     final bm = Path()
       ..moveTo(mid - 9, bookBottom + 2)
@@ -478,7 +557,11 @@ class _BookWithRaysPainter extends CustomPainter {
       ..lineTo(mid, bookBottom - bookH * 0.14)
       ..close();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     canvas.drawPath(bm, bmPaint);
+=======
+    canvas.drawPath(bm, Paint()..color = const Color(0xFF1A237E)..style = PaintingStyle.fill);
+>>>>>>> Stashed changes
 =======
     canvas.drawPath(bm, Paint()..color = const Color(0xFF1A237E)..style = PaintingStyle.fill);
 >>>>>>> Stashed changes
@@ -504,6 +587,7 @@ class _SplitDivider extends StatelessWidget {
           Row(
             children: [
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
               Expanded(
                 child: Container(
                   height: 2,
@@ -517,6 +601,11 @@ class _SplitDivider extends StatelessWidget {
                   color: const Color(0xFFF9A825),
                 ),
               ),
+=======
+              Expanded(child: Container(height: 2, color: AppColors.primaryDark)),
+              const SizedBox(width: 12),
+              Expanded(child: Container(height: 2, color: AppColors.accent)),
+>>>>>>> Stashed changes
 =======
               Expanded(child: Container(height: 2, color: AppColors.primaryDark)),
               const SizedBox(width: 12),
@@ -537,6 +626,7 @@ class _SplitDivider extends StatelessWidget {
     );
   }
 }
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
 // ─── Bottom-right arc painter ─────────────────────────────────────────────────
@@ -597,5 +687,7 @@ class _DotGrid extends StatelessWidget {
     );
   }
 }
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
