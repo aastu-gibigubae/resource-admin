@@ -1,8 +1,11 @@
-// Admin auth repository stub — implementation pending.
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+abstract class AuthRepository {
+  Future<void> login({
+    required String email,
+    required String password,
+    required String deviceFingerprint,
+  });
 
-abstract class AuthRepository {}
+  Future<void> logout();
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  throw UnimplementedError('AuthRepository not yet implemented');
-});
+  Future<void> refreshToken();
+}
