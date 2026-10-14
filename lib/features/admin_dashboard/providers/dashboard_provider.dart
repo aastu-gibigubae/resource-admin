@@ -1,17 +1,30 @@
-// Dashboard provider stub — implementation pending.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/network/dio_client.dart';
+import '../data/dashboard_remote_datasource.dart';
 
-class DashboardState {
-  final bool isLoading;
-  final String? error;
-  const DashboardState({this.isLoading = false, this.error});
-}
+export '../data/dashboard_remote_datasource.dart' show DashboardData;
 
-class DashboardNotifier extends Notifier<DashboardState> {
+class DashboardNotifier extends AsyncNotifier<DashboardData> {
   @override
-  DashboardState build() => const DashboardState();
+  Future<DashboardData> build() {
+    return ref.read(dashboardRemoteDatasourceProvider).fetchDashboard();
+  }
+
+  Future<void> resolveReport(int reportId) async {
+    await ref.read(dioProvider).post<void>('/admin/reports/$reportId/resolve');
+    ref.invalidateSelf();
+  }
+
+  Future<void> grantPremium(int userId, {String? note}) async {
+    await ref.read(dioProvider).post<void>(
+      '/admin/users/$userId/grant-premium',
+      data: note != null ? {'note': note} : null,
+    );
+    ref.invalidateSelf();
+  }
 }
 
-final dashboardProvider = NotifierProvider<DashboardNotifier, DashboardState>(
+final dashboardProvider =
+    AsyncNotifierProvider<DashboardNotifier, DashboardData>(
   DashboardNotifier.new,
 );
