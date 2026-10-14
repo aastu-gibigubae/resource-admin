@@ -46,7 +46,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
               height: 160,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primary.withOpacity(0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
               ),
             ),
           ),
@@ -145,7 +145,7 @@ class _SunburstPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.accent.withOpacity(0.7)
+      ..color = AppColors.accent.withValues(alpha: 0.7)
       ..strokeWidth = 2.5
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
@@ -275,7 +275,7 @@ class _DotGrid extends StatelessWidget {
                   width: 5,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: AppColors.dotAccent.withOpacity(0.5),
+                    color: AppColors.dotAccent.withValues(alpha: 0.5),
                     shape: BoxShape.circle,
                   ),
                 ),

@@ -1,6 +1,6 @@
 class ApiConstants {
   ApiConstants._();
-  static const String baseUrl = 'https://api.example.com/v1';
+  static const String baseUrl = 'https://resource-app-h7e9.onrender.com';
 
   // Auth
   static const String login = '/auth/login';
@@ -21,5 +21,6 @@ class ApiConstants {
   static const String courses = '/courses';
 
   // Dashboard
-  static const String dashboardSummary = '/admin/dashboard/summary';
+  static const String dashboardReports = '/admin/reports';
+  static const String dashboardReportsResolve = '/admin/reports/{id}/resolve';
 }
