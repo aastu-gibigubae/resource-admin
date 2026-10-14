@@ -7,14 +7,15 @@ import '../../data/models/pending_request_model.dart';
 import '../../data/models/recent_activity_model.dart';
 import '../../providers/dashboard_provider.dart';
 
-// ── Colors (exact from image) ─────────────────────────────────────────────────
-const _navy = Color(0xFF1A237E);
-const _blue = Color(0xFF1565C0);
+// ── Colors (consistent with AppColors) ───────────────────────────────────────
+const _navy = Color(0xFF1A237E);       // AppColors.primaryDark
+const _blue = Color(0xFF1A237E);       // same navy for card 1 bg
 const _blueLight = Color(0xFFE3F2FD);
 const _greenLight = Color(0xFFE8F5E9);
 const _greenDark = Color(0xFF2E7D32);
 const _greenText = Color(0xFF1B5E20);
-const _blueText = Color(0xFF0D47A1);
+const _blueText = Color(0xFF1A237E);   // navy for card 3 value
+const _blueCardText = Color(0xFF1565C0); // blue for card 3 label/icon
 const _amber = Color(0xFFF9A825);
 const _redOutline = Color(0xFFD32F2F);
 const _avatarBg = Color(0xFFE8EAF6);
@@ -28,7 +29,7 @@ class AdminDashboardPage extends ConsumerWidget {
     final state = ref.watch(dashboardProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Colors.white,
       body: state.when(
         loading: () => const _Body(isLoading: true),
         error: (e, _) => _Body(
@@ -119,7 +120,7 @@ class _BodyState extends ConsumerState<_Body> {
         SliverAppBar(
           backgroundColor: _navy,
           pinned: true,
-          expandedHeight: 136,
+          expandedHeight: 120,
           automaticallyImplyLeading: false,
           actions: [
             Padding(
@@ -136,7 +137,7 @@ class _BodyState extends ConsumerState<_Body> {
               return FlexibleSpaceBar(
                 background: SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 56, 12),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 56, 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -150,7 +151,7 @@ class _BodyState extends ConsumerState<_Body> {
                             height: 1.1,
                           ),
                         ),
-                        const SizedBox(height: 6),
+                        const SizedBox(height: 4),
                         const Text(
                           'Overview of payment requests and subscription\nstatus.',
                           style: TextStyle(
@@ -175,62 +176,65 @@ class _BodyState extends ConsumerState<_Body> {
               // ── Stat cards ──
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 14, 12, 0),
-                child: Row(
-                  children: [
-                    // Card 1 — Blue
-                    Expanded(
-                      child: _StatCard(
-                        bgColor: _blue,
-                        iconWidget: const Icon(Icons.people,
-                            color: Colors.white, size: 28),
-                        iconBgColor: Colors.white24,
-                        label: 'Total students',
-                        labelColor: Colors.white70,
-                        value: widget.isLoading
-                            ? '...'
-                            : stats.totalStudents.toString(),
-                        valueColor: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    // Card 2 — Light green
-                    Expanded(
-                      child: _StatCard(
-                        bgColor: _greenLight,
-                        iconWidget: Container(
-                          width: 28,
-                          height: 28,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFA5D6A7),
-                            borderRadius: BorderRadius.circular(6),
-                          ),
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Card 1 — Navy blue
+                      Expanded(
+                        child: _StatCard(
+                          bgColor: _navy,
+                          iconWidget: const Icon(Icons.people,
+                              color: Colors.white, size: 24),
+                          iconBgColor: Colors.white24,
+                          label: 'Total students',
+                          labelColor: Colors.white70,
+                          value: widget.isLoading
+                              ? '...'
+                              : stats.totalStudents.toString(),
+                          valueColor: Colors.white,
                         ),
-                        iconBgColor: Colors.transparent,
-                        label: 'Active\nSubscriptions',
-                        labelColor: _greenDark,
-                        value: widget.isLoading
-                            ? '...'
-                            : stats.activeSubscriptions.toString(),
-                        valueColor: _greenText,
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    // Card 3 — Light blue
-                    Expanded(
-                      child: _StatCard(
-                        bgColor: _blueLight,
-                        iconWidget: const Icon(Icons.folder,
-                            color: _blue, size: 28),
-                        iconBgColor: Colors.transparent,
-                        label: 'Resource\nUploaded',
-                        labelColor: _blue,
-                        value: widget.isLoading
-                            ? '...'
-                            : stats.resourceUploaded.toString(),
-                        valueColor: _blueText,
+                      const SizedBox(width: 10),
+                      // Card 2 — Light green
+                      Expanded(
+                        child: _StatCard(
+                          bgColor: _greenLight,
+                          iconWidget: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFA5D6A7),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          iconBgColor: Colors.transparent,
+                          label: 'Active\nSubscriptions',
+                          labelColor: _greenDark,
+                          value: widget.isLoading
+                              ? '...'
+                              : stats.activeSubscriptions.toString(),
+                          valueColor: _greenText,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 10),
+                      // Card 3 — Light blue
+                      Expanded(
+                        child: _StatCard(
+                          bgColor: _blueLight,
+                          iconWidget: const Icon(Icons.folder,
+                              color: _blueCardText, size: 24),
+                          iconBgColor: Colors.transparent,
+                          label: 'Resource\nUploaded',
+                          labelColor: _blueCardText,
+                          value: widget.isLoading
+                              ? '...'
+                              : stats.resourceUploaded.toString(),
+                          valueColor: _blueText,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -363,15 +367,19 @@ class _StatCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(8),
+          // Icon area — same size across all cards
+          SizedBox(
+            width: 36,
+            height: 36,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: iconBgColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(child: iconWidget),
             ),
-            child: Center(child: iconWidget),
           ),
           const SizedBox(height: 8),
           Text(
@@ -387,7 +395,7 @@ class _StatCard extends StatelessWidget {
           Text(
             value,
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: FontWeight.w800,
               color: valueColor,
               height: 1.1,
