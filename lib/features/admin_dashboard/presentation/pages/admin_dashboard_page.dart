@@ -116,11 +116,11 @@ class _BodyState extends ConsumerState<_Body> {
 
     return CustomScrollView(
       slivers: [
-        // ── App bar ──
+        // ── App bar (taller to allow card overlap) ──
         SliverAppBar(
           backgroundColor: _navy,
           pinned: true,
-          expandedHeight: 120,
+          expandedHeight: 160,
           automaticallyImplyLeading: false,
           actions: [
             Padding(
@@ -132,40 +132,36 @@ class _BodyState extends ConsumerState<_Body> {
               ),
             ),
           ],
-          flexibleSpace: LayoutBuilder(
-            builder: (context, constraints) {
-              return FlexibleSpaceBar(
-                background: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 56, 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Text(
-                          'Dashboard',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
-                            height: 1.1,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Overview of payment requests and subscription\nstatus.',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 13,
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
+          flexibleSpace: FlexibleSpaceBar(
+            background: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 56, 60),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: const [
+                    Text(
+                      'Dashboard',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w800,
+                        height: 1.1,
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Overview of payment requests and subscription\nstatus.',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ),
 
@@ -173,13 +169,15 @@ class _BodyState extends ConsumerState<_Body> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Stat cards ──
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 14, 12, 0),
-                child: IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
+              // ── Stat cards (overlaid on navy app bar) ──
+              Transform.translate(
+                offset: const Offset(0, -28),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                  child: IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
                       // Card 1 — Navy blue
                       Expanded(
                         child: _StatCard(
@@ -236,6 +234,7 @@ class _BodyState extends ConsumerState<_Body> {
                     ],
                   ),
                 ),
+              ),
               ),
 
               const SizedBox(height: 20),
