@@ -44,28 +44,38 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
         title: const Text(
           'Reset Your Password',
           style: TextStyle(
-              color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         titleSpacing: 0,
       ),
       body: Stack(
         children: [
+          // Shared bottom-right decoration
           const BottomDecoration(),
+
           SafeArea(
             child: SingleChildScrollView(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Form(
                 key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('New Password',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF444444))),
+                    // ── New Password ──
+                    const Text(
+                      'New Password',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF444444),
+                      ),
+                    ),
+
                     const SizedBox(height: 8),
+
                     TextFormField(
                       controller: _newPasswordController,
                       obscureText: _obscureNew,
@@ -73,9 +83,14 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                       decoration: InputDecoration(
                         hintText: 'Enter your new password:',
                         hintStyle: const TextStyle(
-                            color: Color(0xFFAAAAAA), fontSize: 14),
-                        prefixIcon: const Icon(Icons.lock_outline,
-                            color: Color(0xFFBBBBBB), size: 20),
+                          color: Color(0xFFAAAAAA),
+                          fontSize: 14,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.lock_outline,
+                          color: Color(0xFFBBBBBB),
+                          size: 20,
+                        ),
                         suffixIcon: GestureDetector(
                           onTap: () =>
                               setState(() => _obscureNew = !_obscureNew),
@@ -90,17 +105,24 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                         filled: true,
                         fillColor: const Color(0xFFF0F0F0),
                         contentPadding: const EdgeInsets.symmetric(
-                            vertical: 14, horizontal: 12),
+                          vertical: 14,
+                          horizontal: 12,
+                        ),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide.none),
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
                         enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide.none),
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
                         focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: const BorderSide(
-                                color: AppColors.primary, width: 1.5)),
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: const BorderSide(
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
+                        ),
                       ),
                       validator: (v) {
                         if (v == null || v.isEmpty) return 'Enter a password';
@@ -108,13 +130,21 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                         return null;
                       },
                     ),
+
                     const SizedBox(height: 20),
-                    const Text('Confirm New Password',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF444444))),
+
+                    // ── Confirm New Password ──
+                    const Text(
+                      'Confirm New Password',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF444444),
+                      ),
+                    ),
+
                     const SizedBox(height: 8),
+
                     TextFormField(
                       controller: _confirmPasswordController,
                       obscureText: _obscureConfirm,
@@ -122,9 +152,14 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                       decoration: InputDecoration(
                         hintText: 'RE-enter your new password:',
                         hintStyle: const TextStyle(
-                            color: Color(0xFFAAAAAA), fontSize: 14),
-                        prefixIcon: const Icon(Icons.lock_outline,
-                            color: Color(0xFFBBBBBB), size: 20),
+                          color: Color(0xFFAAAAAA),
+                          fontSize: 14,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.lock_outline,
+                          color: Color(0xFFBBBBBB),
+                          size: 20,
+                        ),
                         suffixIcon: GestureDetector(
                           onTap: () => setState(
                               () => _obscureConfirm = !_obscureConfirm),
@@ -139,27 +174,37 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                         filled: true,
                         fillColor: const Color(0xFFF0F0F0),
                         contentPadding: const EdgeInsets.symmetric(
-                            vertical: 14, horizontal: 12),
+                          vertical: 14,
+                          horizontal: 12,
+                        ),
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide.none),
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
                         enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: BorderSide.none),
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
                         focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24),
-                            borderSide: const BorderSide(
-                                color: AppColors.primary, width: 1.5)),
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: const BorderSide(
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
+                        ),
                       ),
                       validator: (v) {
-                        if (v == null || v.isEmpty)
-                          return 'Confirm your password';
-                        if (v != _newPasswordController.text)
+                        if (v == null || v.isEmpty) return 'Confirm your password';
+                        if (v != _newPasswordController.text) {
                           return 'Passwords do not match';
+                        }
                         return null;
                       },
                     ),
+
                     const SizedBox(height: 20),
+
+                    // ── Reset Password button ──
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -169,12 +214,17 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                           backgroundColor: AppColors.primaryDark,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30)),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                           elevation: 0,
                         ),
-                        child: const Text('Reset Password',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w700)),
+                        child: const Text(
+                          'Reset Password',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
                     ),
                   ],
