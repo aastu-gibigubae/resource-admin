@@ -155,15 +155,16 @@ class _BodyState extends ConsumerState<_Body> {
                       children: [
                         Expanded(
                           child: _StatCard(
-                            bgColor: const Color(0xFF1565C0),
+                            bgColor: const Color(0xFFF1F6FF),
+                            border: Border.all(color: const Color(0xFFD0E1FF)),
                             iconWidget: const Icon(Icons.people,
-                                color: Colors.white, size: 24),
+                                color: Color(0xFF1565C0), size: 24),
                             label: 'Total students',
-                            labelColor: Colors.white70,
+                            labelColor: const Color(0xFF1565C0),
                             value: widget.isLoading
                                 ? '...'
                                 : stats.totalStudents.toString(),
-                            valueColor: Colors.white,
+                            valueColor: _navy,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -314,6 +315,7 @@ class _BodyState extends ConsumerState<_Body> {
 
 class _StatCard extends StatelessWidget {
   final Color bgColor;
+  final Border? border;
   final Widget iconWidget;
   final String label;
   final Color labelColor;
@@ -322,6 +324,7 @@ class _StatCard extends StatelessWidget {
 
   const _StatCard({
     required this.bgColor,
+    this.border,
     required this.iconWidget,
     required this.label,
     required this.labelColor,
@@ -335,10 +338,11 @@ class _StatCard extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
+        border: border,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
