@@ -225,8 +225,7 @@ class _BodyState extends ConsumerState<_Body> {
   }
 }
 
-// ─── Header with overlapping stat cards ──────────────────────────────────────
-// Uses a Stack: navy Container behind, cards positioned to overlap the bottom
+// ─── Header with stat cards inside navy background ───────────────────────────
 
 class _Header extends StatelessWidget {
   final bool isLoading;
@@ -237,126 +236,100 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
-    // Navy section height + card overlap
-    const navyHeight = 160.0;
-    const cardHeight = 120.0;
-    const overlap = 30.0;
-    const totalHeight = navyHeight + cardHeight - overlap;
 
-    return SizedBox(
-      height: topPadding + totalHeight,
-      child: Stack(
+    return Container(
+      decoration: const BoxDecoration(
+        color: _navy,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(24),
+          bottomRight: Radius.circular(24),
+        ),
+      ),
+      padding: EdgeInsets.fromLTRB(16, topPadding + 8, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Navy background (top portion) with rounded bottom corners
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: topPadding + navyHeight,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: _navy,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
-                ),
+          // Top row: person-add icon on the right
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.person_add_alt_1_outlined,
+                    color: Colors.white, size: 24),
+                onPressed: () {},
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
               ),
-              padding: EdgeInsets.fromLTRB(16, topPadding + 8, 16, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Top row: person-add icon on the right
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.person_add_alt_1_outlined,
-                            color: Colors.white, size: 24),
-                        onPressed: () {},
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                      ),
-                    ],
-                  ),
-                  const Text(
-                    'Dashboard',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 26,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Overview of payment requests and subscription\nstatus.',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12.5,
-                      height: 1.4,
-                    ),
-                  ),
-                ],
-              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Dashboard',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
             ),
           ),
-
-          // Stat cards — overlapping the navy bottom
-          Positioned(
-            bottom: 0,
-            left: 12,
-            right: 12,
-            height: cardHeight,
-            child: Row(
-              children: [
-                // Card 1 — navy blue bg, white people icon
-                Expanded(
-                  child: _StatCard(
-                    bgColor: const Color(0xFF0D2B6E),
-                    iconWidget: const Icon(Icons.people,
-                        color: Colors.white, size: 26),
-                    iconBg: Colors.transparent,
-                    label: 'Total students',
-                    labelColor: Colors.white70,
-                    value: isLoading ? '...' : stats.totalStudents.toString(),
-                    valueColor: Colors.white,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                // Card 2 — light green bg, green square placeholder
-                Expanded(
-                  child: _StatCard(
-                    bgColor: const Color(0xFFE8F5E9),
-                    iconWidget: Container(
-                      width: 26,
-                      height: 26,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFA5D6A7),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                    iconBg: Colors.transparent,
-                    label: 'Active\nSubscriptions',
-                    labelColor: const Color(0xFF2E7D32),
-                    value: isLoading ? '...' : stats.activeSubscriptions.toString(),
-                    valueColor: const Color(0xFF1B5E20),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                // Card 3 — light blue bg, blue folder icon
-                Expanded(
-                  child: _StatCard(
-                    bgColor: const Color(0xFFE3F2FD),
-                    iconWidget: const Icon(Icons.folder,
-                        color: Color(0xFF1565C0), size: 26),
-                    iconBg: Colors.transparent,
-                    label: 'Resource\nUploaded',
-                    labelColor: const Color(0xFF1565C0),
-                    value: isLoading ? '...' : stats.resourceUploaded.toString(),
-                    valueColor: const Color(0xFF0D2B6E),
-                  ),
-                ),
-              ],
+          const SizedBox(height: 4),
+          const Text(
+            'Overview of payment requests and subscription\nstatus.',
+            style: TextStyle(
+              color: Colors.white70,
+              fontSize: 12.5,
+              height: 1.4,
             ),
+          ),
+          const SizedBox(height: 16),
+
+          // Stat cards row — inside the navy background
+          Row(
+            children: [
+              // Card 1 — navy blue bg, white people icon
+              Expanded(
+                child: _StatCard(
+                  bgColor: const Color(0xFF1A3A6E),
+                  iconWidget: const Icon(Icons.people,
+                      color: Colors.white, size: 26),
+                  label: 'Total students',
+                  labelColor: Colors.white70,
+                  value: isLoading ? '...' : stats.totalStudents.toString(),
+                  valueColor: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Card 2 — light green bg, green square
+              Expanded(
+                child: _StatCard(
+                  bgColor: const Color(0xFFE8F5E9),
+                  iconWidget: Container(
+                    width: 26,
+                    height: 26,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFA5D6A7),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  label: 'Active\nSubscriptions',
+                  labelColor: const Color(0xFF2E7D32),
+                  value: isLoading ? '...' : stats.activeSubscriptions.toString(),
+                  valueColor: const Color(0xFF1B5E20),
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Card 3 — light blue bg, blue folder icon
+              Expanded(
+                child: _StatCard(
+                  bgColor: const Color(0xFFE3F2FD),
+                  iconWidget: const Icon(Icons.folder,
+                      color: Color(0xFF1565C0), size: 26),
+                  label: 'Resource\nUploaded',
+                  labelColor: const Color(0xFF1565C0),
+                  value: isLoading ? '...' : stats.resourceUploaded.toString(),
+                  valueColor: const Color(0xFF0D2B6E),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -369,7 +342,6 @@ class _Header extends StatelessWidget {
 class _StatCard extends StatelessWidget {
   final Color bgColor;
   final Widget iconWidget;
-  final Color iconBg;
   final String label;
   final Color labelColor;
   final String value;
@@ -378,7 +350,6 @@ class _StatCard extends StatelessWidget {
   const _StatCard({
     required this.bgColor,
     required this.iconWidget,
-    required this.iconBg,
     required this.label,
     required this.labelColor,
     required this.value,
@@ -392,17 +363,10 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           iconWidget,
           const SizedBox(height: 6),
