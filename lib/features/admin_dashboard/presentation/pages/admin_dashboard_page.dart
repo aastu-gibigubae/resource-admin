@@ -106,7 +106,7 @@ class _BodyState extends ConsumerState<_Body> {
     // Navy section height (text only, no cards)
     final navyHeight = topPadding + 140.0;
     // Cards height
-    const cardHeight = 100.0;
+    const cardHeight = 115.0;
     // How much the cards overlap into the navy
     const cardOverlap = 40.0;
 
@@ -178,7 +178,7 @@ class _BodyState extends ConsumerState<_Body> {
                       // Card 1 — darker navy
                       Expanded(
                         child: _StatCard(
-                          bgColor: const Color(0xFF1B3E73),
+                          bgColor: const Color(0xFF1565C0),
                           iconWidget: const Icon(Icons.people,
                               color: Colors.white, size: 24),
                           label: 'Total students',
