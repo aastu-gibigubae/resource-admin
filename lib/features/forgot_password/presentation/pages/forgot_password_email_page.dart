@@ -35,7 +35,7 @@ class _ForgotPasswordEmailPageState
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF5C6BC0), // blue-grey as in image
+        backgroundColor: AppColors.primaryDark,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -131,7 +131,7 @@ class _ForgotPasswordEmailPageState
                           child: ElevatedButton(
                             onPressed: _onSubmit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF5C6BC0),
+                              backgroundColor: AppColors.primaryDark,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
@@ -194,7 +194,7 @@ class _CheckEmailCard extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: const BoxDecoration(
-              color: Color(0xFF5C6BC0),
+              color: Color(0xFF1A237E),
               shape: BoxShape.circle,
             ),
             child: const Icon(
