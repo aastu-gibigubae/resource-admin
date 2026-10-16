@@ -13,6 +13,7 @@ import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/forgot_password/presentation/pages/forgot_password_email_page.dart';
 import '../../features/forgot_password/presentation/pages/forgot_password_verify_page.dart';
 import '../../features/forgot_password/presentation/pages/reset_password_page.dart';
+import '../../features/profile/presentation/pages/add_admin_page.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -71,6 +72,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const UploadResultPage(),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/add-admin',
+        builder: (context, state) => const AddAdminPage(),
       ),
       GoRoute(
         path: RouteNames.profile,

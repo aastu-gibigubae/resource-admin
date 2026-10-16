@@ -127,8 +127,11 @@ class _BodyState extends ConsumerState<_Body> {
                   children: [
                     Align(
                       alignment: Alignment.centerRight,
-                      child: const Icon(Icons.person_add_alt_1_outlined,
-                          color: Colors.white, size: 24),
+                      child: GestureDetector(
+                        onTap: () => context.go('/add-admin'),
+                        child: const Icon(Icons.person_add_alt_1_outlined,
+                            color: Colors.white, size: 24),
+                      ),
                     ),
                     const SizedBox(height: 4),
                     const Text(
