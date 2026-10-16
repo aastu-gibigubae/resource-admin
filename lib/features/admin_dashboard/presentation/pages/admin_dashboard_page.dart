@@ -247,23 +247,28 @@ class _Header extends StatelessWidget {
       height: topPadding + totalHeight,
       child: Stack(
         children: [
-          // Navy background (top portion)
+          // Navy background (top portion) with rounded bottom corners
           Positioned(
             top: 0,
             left: 0,
             right: 0,
             height: topPadding + navyHeight,
             child: Container(
-              color: _navy,
+              decoration: const BoxDecoration(
+                color: _navy,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(24),
+                  bottomRight: Radius.circular(24),
+                ),
+              ),
               padding: EdgeInsets.fromLTRB(16, topPadding + 8, 16, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Top row: title + icon
+                  // Top row: person-add icon on the right
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const SizedBox.shrink(),
                       IconButton(
                         icon: const Icon(Icons.person_add_alt_1_outlined,
                             color: Colors.white, size: 24),
@@ -273,7 +278,6 @@ class _Header extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
                   const Text(
                     'Dashboard',
                     style: TextStyle(
