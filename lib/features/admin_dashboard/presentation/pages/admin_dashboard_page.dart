@@ -128,7 +128,7 @@ class _BodyState extends ConsumerState<_Body> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: () => context.go('/add-admin'),
+                        onTap: () => context.push('/add-admin'),
                         child: const Icon(Icons.person_add_alt_1_outlined,
                             color: Colors.white, size: 24),
                       ),
@@ -235,7 +235,7 @@ class _BodyState extends ConsumerState<_Body> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => context.go(RouteNames.pendingRequests),                  child: const Text(
+                  onTap: () => context.push(RouteNames.pendingRequests),                  child: const Text(
                     'View all',
                     style: TextStyle(
                       fontSize: 13,

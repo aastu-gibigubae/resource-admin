@@ -197,13 +197,13 @@ class _AddAdminPageState extends ConsumerState<AddAdminPage> {
                     color: const Color(0xFFEEF3FF),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Row(
+                  child: const Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.info_outline,
+                      Icon(Icons.info_outline,
                           color: Color(0xFF1565C0), size: 18),
-                      const SizedBox(width: 8),
-                      const Expanded(
+                      SizedBox(width: 8),
+                      Expanded(
                         child: Text(
                           'The new admin will be able to manage content, approve premium access, activate devices and create other admins',
                           style: TextStyle(
