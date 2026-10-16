@@ -108,109 +108,114 @@ class _BodyState extends ConsumerState<_Body> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Navy header ──
-          Container(
-            decoration: const BoxDecoration(
-              color: _navy,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(24),
-                bottomRight: Radius.circular(24),
-              ),
-            ),
-            padding: EdgeInsets.fromLTRB(16, topPadding + 8, 16, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: const Icon(Icons.person_add_alt_1_outlined,
-                      color: Colors.white, size: 24),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  'Dashboard',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w800,
+          // ── Stack: navy header + cards half-overlapping bottom ──
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Navy background
+              Container(
+                decoration: const BoxDecoration(
+                  color: _navy,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
                   ),
                 ),
-                const SizedBox(height: 4),
-                const Text(
-                  'Overview of payment requests and subscription\nstatus.',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12.5,
-                    height: 1.4,
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // ── Cards inside navy, overlapping bottom ──
-                Transform.translate(
-                  offset: const Offset(0, 30),
-                  child: IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: _StatCard(
-                            bgColor: const Color(0xFFF1F6FF),
-                            border: Border.all(color: const Color(0xFFD0E1FF)),
-                            iconWidget: const Icon(Icons.people,
-                                color: Color(0xFF1565C0), size: 24),
-                            label: 'Total students',
-                            labelColor: const Color(0xFF1565C0),
-                            value: widget.isLoading
-                                ? '...'
-                                : stats.totalStudents.toString(),
-                            valueColor: _navy,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: _StatCard(
-                            bgColor: const Color(0xFFE8F5E9),
-                            iconWidget: Container(
-                              width: 26,
-                              height: 26,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFA5D6A7),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            label: 'Active\nSubscriptions',
-                            labelColor: const Color(0xFF2E7D32),
-                            value: widget.isLoading
-                                ? '...'
-                                : stats.activeSubscriptions.toString(),
-                            valueColor: const Color(0xFF1B5E20),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: _StatCard(
-                            bgColor: const Color(0xFFDCEEFB),
-                            iconWidget: const Icon(Icons.folder,
-                                color: Color(0xFF1565C0), size: 24),
-                            label: 'Resource\nUploaded',
-                            labelColor: const Color(0xFF1565C0),
-                            value: widget.isLoading
-                                ? '...'
-                                : stats.resourceUploaded.toString(),
-                            valueColor: _navy,
-                          ),
-                        ),
-                      ],
+                padding: EdgeInsets.fromLTRB(16, topPadding + 8, 16, 60),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: const Icon(Icons.person_add_alt_1_outlined,
+                          color: Colors.white, size: 24),
                     ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Dashboard',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 26,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Overview of payment requests and subscription\nstatus.',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 12.5,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Cards — positioned to overlap the bottom edge of navy
+              Positioned(
+                bottom: -50,
+                left: 12,
+                right: 12,
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: _StatCard(
+                          bgColor: const Color(0xFFF1F6FF),
+                          border: Border.all(color: const Color(0xFFD0E1FF)),
+                          iconWidget: const Icon(Icons.people,
+                              color: Color(0xFF1565C0), size: 24),
+                          label: 'Total students',
+                          labelColor: const Color(0xFF1565C0),
+                          value: widget.isLoading ? '...' : stats.totalStudents.toString(),
+                          valueColor: _navy,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _StatCard(
+                          bgColor: const Color(0xFFE8F5E9),
+                          border: Border.all(color: const Color(0xFFC8E6C9)),
+                          iconWidget: Container(
+                            width: 26,
+                            height: 26,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFA5D6A7),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          label: 'Active\nSubscriptions',
+                          labelColor: const Color(0xFF2E7D32),
+                          value: widget.isLoading ? '...' : stats.activeSubscriptions.toString(),
+                          valueColor: const Color(0xFF1B5E20),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _StatCard(
+                          bgColor: const Color(0xFFDCEEFB),
+                          border: Border.all(color: const Color(0xFFBBDEFB)),
+                          iconWidget: const Icon(Icons.folder,
+                              color: Color(0xFF1565C0), size: 24),
+                          label: 'Resource\nUploaded',
+                          labelColor: const Color(0xFF1565C0),
+                          value: widget.isLoading ? '...' : stats.resourceUploaded.toString(),
+                          valueColor: _navy,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 30),
-              ],
-            ),
+              ),
+            ],
           ),
 
-          const SizedBox(height: 20),
+          // Space for the overlapping cards
+          const SizedBox(height: 70),
+
+          const SizedBox(height: 10),
 
           // ── Pending Payment Requests ──
           Padding(
