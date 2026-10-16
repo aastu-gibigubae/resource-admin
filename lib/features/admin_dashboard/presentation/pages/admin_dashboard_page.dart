@@ -7,7 +7,7 @@ import '../../data/models/pending_request_model.dart';
 import '../../data/models/recent_activity_model.dart';
 import '../../providers/dashboard_provider.dart';
 
-const _navy = Color(0xFF1A237E);
+const _navy = Color(0xFF0D2B6E);
 const _blueLight = Color(0xFFE3F2FD);
 const _greenLight = Color(0xFFE8F5E9);
 const _greenDark = Color(0xFF2E7D32);
