@@ -232,8 +232,7 @@ class _BodyState extends ConsumerState<_Body> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => context.go(RouteNames.pendingRequests),
-                  child: const Text(
+                  onTap: () => context.go(RouteNames.pendingRequests),                  child: const Text(
                     'View all',
                     style: TextStyle(
                       fontSize: 13,
