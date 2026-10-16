@@ -308,29 +308,27 @@ class _Header extends StatelessWidget {
             height: cardHeight,
             child: Row(
               children: [
-                // Card 1 — navy
+                // Card 1 — navy blue bg, white people icon
                 Expanded(
                   child: _StatCard(
-                    bgColor: _navy,
-                    border: Border.all(color: Colors.white24),
+                    bgColor: const Color(0xFF0D2B6E),
                     iconWidget: const Icon(Icons.people,
-                        color: Colors.white, size: 22),
-                    iconBg: Colors.white24,
+                        color: Colors.white, size: 26),
+                    iconBg: Colors.transparent,
                     label: 'Total students',
                     labelColor: Colors.white70,
                     value: isLoading ? '...' : stats.totalStudents.toString(),
                     valueColor: Colors.white,
                   ),
                 ),
-                const SizedBox(width: 10),
-                // Card 2 — light green
+                const SizedBox(width: 8),
+                // Card 2 — light green bg, green square placeholder
                 Expanded(
                   child: _StatCard(
-                    bgColor: _greenLight,
-                    border: Border.all(color: const Color(0xFFC8E6C9)),
+                    bgColor: const Color(0xFFE8F5E9),
                     iconWidget: Container(
-                      width: 22,
-                      height: 22,
+                      width: 26,
+                      height: 26,
                       decoration: BoxDecoration(
                         color: const Color(0xFFA5D6A7),
                         borderRadius: BorderRadius.circular(4),
@@ -338,26 +336,23 @@ class _Header extends StatelessWidget {
                     ),
                     iconBg: Colors.transparent,
                     label: 'Active\nSubscriptions',
-                    labelColor: _greenDark,
-                    value:
-                        isLoading ? '...' : stats.activeSubscriptions.toString(),
-                    valueColor: _greenText,
+                    labelColor: const Color(0xFF2E7D32),
+                    value: isLoading ? '...' : stats.activeSubscriptions.toString(),
+                    valueColor: const Color(0xFF1B5E20),
                   ),
                 ),
-                const SizedBox(width: 10),
-                // Card 3 — light blue
+                const SizedBox(width: 8),
+                // Card 3 — light blue bg, blue folder icon
                 Expanded(
                   child: _StatCard(
-                    bgColor: _blueLight,
-                    border: Border.all(color: const Color(0xFFBBDEFB)),
+                    bgColor: const Color(0xFFE3F2FD),
                     iconWidget: const Icon(Icons.folder,
-                        color: _blueCardIcon, size: 22),
+                        color: Color(0xFF1565C0), size: 26),
                     iconBg: Colors.transparent,
                     label: 'Resource\nUploaded',
-                    labelColor: _blueCardIcon,
-                    value:
-                        isLoading ? '...' : stats.resourceUploaded.toString(),
-                    valueColor: _navy,
+                    labelColor: const Color(0xFF1565C0),
+                    value: isLoading ? '...' : stats.resourceUploaded.toString(),
+                    valueColor: const Color(0xFF0D2B6E),
                   ),
                 ),
               ],
@@ -373,7 +368,6 @@ class _Header extends StatelessWidget {
 
 class _StatCard extends StatelessWidget {
   final Color bgColor;
-  final BoxBorder border;
   final Widget iconWidget;
   final Color iconBg;
   final String label;
@@ -383,7 +377,6 @@ class _StatCard extends StatelessWidget {
 
   const _StatCard({
     required this.bgColor,
-    required this.border,
     required this.iconWidget,
     required this.iconBg,
     required this.label,
@@ -399,21 +392,19 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(12),
-        border: border,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: iconBg,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(child: iconWidget),
-          ),
+          iconWidget,
           const SizedBox(height: 6),
           Text(label,
               style: TextStyle(
