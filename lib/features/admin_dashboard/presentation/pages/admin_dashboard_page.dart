@@ -285,10 +285,10 @@ class _Header extends StatelessWidget {
           // Stat cards row — inside the navy background
           Row(
             children: [
-              // Card 1 — navy blue bg, white people icon
+              // Card 1 — slightly lighter navy, white people icon
               Expanded(
                 child: _StatCard(
-                  bgColor: const Color(0xFF1A3A6E),
+                  bgColor: const Color(0xFF1E3A5F),
                   iconWidget: const Icon(Icons.people,
                       color: Colors.white, size: 26),
                   label: 'Total students',
@@ -303,11 +303,11 @@ class _Header extends StatelessWidget {
                 child: _StatCard(
                   bgColor: const Color(0xFFE8F5E9),
                   iconWidget: Container(
-                    width: 26,
-                    height: 26,
+                    width: 28,
+                    height: 28,
                     decoration: BoxDecoration(
                       color: const Color(0xFFA5D6A7),
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   label: 'Active\nSubscriptions',
@@ -320,7 +320,7 @@ class _Header extends StatelessWidget {
               // Card 3 — light blue bg, blue folder icon
               Expanded(
                 child: _StatCard(
-                  bgColor: const Color(0xFFE3F2FD),
+                  bgColor: const Color(0xFFDCEEFB),
                   iconWidget: const Icon(Icons.folder,
                       color: Color(0xFF1565C0), size: 26),
                   label: 'Resource\nUploaded',
