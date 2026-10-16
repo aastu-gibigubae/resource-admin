@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../admin_dashboard/data/models/pending_request_model.dart';
 import '../../providers/pending_requests_provider.dart';
@@ -34,7 +35,7 @@ class PendingRequestsPage extends ConsumerWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         title: const Text(
           'Pending Payment Requests',

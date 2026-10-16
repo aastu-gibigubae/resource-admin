@@ -48,7 +48,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => context.pop(),
         ),
         title: const Text(
           'Reset Your Password',
