@@ -238,7 +238,7 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
     // Navy section height + card overlap
-    const navyHeight = 145.0;
+    const navyHeight = 160.0;
     const cardHeight = 120.0;
     const overlap = 30.0;
     const totalHeight = navyHeight + cardHeight - overlap;
