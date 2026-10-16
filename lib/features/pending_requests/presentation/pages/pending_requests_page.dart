@@ -24,6 +24,7 @@ class PendingRequestsPage extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: AppColors.primaryDark,
         elevation: 0,
+        toolbarHeight: 70,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             color: AppColors.primaryDark,

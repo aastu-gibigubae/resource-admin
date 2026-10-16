@@ -44,6 +44,7 @@ class _AddAdminPageState extends ConsumerState<AddAdminPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        toolbarHeight: 70,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             color: AppColors.primaryDark,
