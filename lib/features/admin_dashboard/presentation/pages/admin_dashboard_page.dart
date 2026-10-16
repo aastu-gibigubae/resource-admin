@@ -120,7 +120,7 @@ class _BodyState extends ConsumerState<_Body> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
 
                 // Pending Payment Requests
                 Padding(
@@ -239,7 +239,7 @@ class _Header extends StatelessWidget {
     final topPadding = MediaQuery.of(context).padding.top;
     // Navy section height + card overlap
     const navyHeight = 145.0;
-    const cardHeight = 110.0;
+    const cardHeight = 120.0;
     const overlap = 30.0;
     const totalHeight = navyHeight + cardHeight - overlap;
 
@@ -424,7 +424,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 3),
           Text(value,
               style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: FontWeight.w800,
                   color: valueColor,
                   height: 1.1)),
