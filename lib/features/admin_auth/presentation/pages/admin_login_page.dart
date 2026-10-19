@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/router/route_names.dart';
 import '../../../../core/widgets/bottom_decoration.dart';
+import '../../providers/auth_provider.dart';
 
 
 class AdminLoginPage extends ConsumerStatefulWidget {
@@ -29,8 +30,33 @@ class _AdminLoginPageState extends ConsumerState<AdminLoginPage> {
 
   void _onLogin() {
     if (_formKey.currentState?.validate() ?? false) {
-      // TODO: connect to auth provider
+      ref.read(authProvider.notifier).login(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.listenManual(authProvider, (previous, next) {
+        // Navigate to dashboard on success
+        if (next.user != null && !next.isLoading) {
+          context.go(RouteNames.dashboard);
+        }
+        // Show error snackbar
+        if (next.error != null && previous?.error != next.error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(next.error!),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      });
+    });
   }
 
   // DEV BYPASS — remove when real credentials are available
@@ -267,28 +293,40 @@ class _AdminLoginPageState extends ConsumerState<AdminLoginPage> {
                     const SizedBox(height: 24),
 
                     // Login button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: _onLogin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryDark,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final isLoading = ref.watch(authProvider).isLoading;
+                        return SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: ElevatedButton(
+                            onPressed: isLoading ? null : _onLogin,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryDark,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              elevation: 0,
+                            ),
+                            child: isLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2, color: Colors.white),
+                                  )
+                                : const Text(
+                                    'Login',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
                           ),
-                          elevation: 0,
-                        ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
 
                     const SizedBox(height: 24),
