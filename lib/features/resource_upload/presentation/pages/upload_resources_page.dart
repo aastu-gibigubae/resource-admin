@@ -319,7 +319,7 @@ class _FormField extends StatelessWidget {
           style: const TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: _navy,
+            color: Color(0xFF222222),
           ),
         ),
         const SizedBox(height: 5),
