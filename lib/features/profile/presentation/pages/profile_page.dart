@@ -10,39 +10,34 @@ class ProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final topPadding = MediaQuery.of(context).padding.top;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
-          // ── Navy header with avatar overlapping bottom ──
+          // ── Stack: navy header + avatar overlapping bottom ──
           Stack(
             clipBehavior: Clip.none,
             children: [
-              // Navy background
+              // Navy background with rounded bottom
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: _navy,
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(0),
-                    bottomRight: Radius.circular(0),
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
                   ),
                 ),
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top + 12,
-                  bottom: 60,
-                  left: 16,
-                  right: 16,
-                ),
+                padding: EdgeInsets.fromLTRB(16, topPadding + 12, 16, 70),
                 child: Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => context.go(RouteNames.dashboard),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
+                    GestureDetector(
+                      onTap: () => context.go(RouteNames.dashboard),
+                      child: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 10),
                     const Text(
                       'Profile',
                       style: TextStyle(
@@ -55,9 +50,9 @@ class ProfilePage extends ConsumerWidget {
                 ),
               ),
 
-              // Avatar circle — overlapping the bottom of navy
+              // Avatar overlapping the bottom of navy
               Positioned(
-                bottom: -50,
+                bottom: -45,
                 left: 0,
                 right: 0,
                 child: Center(
@@ -67,7 +62,7 @@ class ProfilePage extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: const Color(0xFF1A3A7A),
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 3),
+                      border: Border.all(color: Colors.white, width: 4),
                     ),
                     child: const Icon(
                       Icons.person,
@@ -80,9 +75,9 @@ class ProfilePage extends ConsumerWidget {
             ],
           ),
 
-          const SizedBox(height: 60),
+          const SizedBox(height: 55),
 
-          // ── Profile card ──
+          // ── White profile card ──
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Container(
@@ -91,6 +86,7 @@ class ProfilePage extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFFEEEEEE)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.06),
@@ -123,20 +119,19 @@ class ProfilePage extends ConsumerWidget {
 
                   const SizedBox(height: 20),
 
-                  // Info rows
-                  _InfoRow(
-                    icon: Icons.shield_outlined,
-                    text: 'Admin',
-                  ),
-                  const SizedBox(height: 10),
-                  _InfoRow(
-                    icon: Icons.upload_outlined,
-                    text: '200 resource added',
-                  ),
-                  const SizedBox(height: 10),
-                  _InfoRow(
-                    icon: Icons.edit_outlined,
-                    text: 'Changed 15 resources',
+                  // Info rows — left aligned
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _InfoRow(icon: Icons.shield_outlined, text: 'Admin'),
+                        SizedBox(height: 12),
+                        _InfoRow(icon: Icons.upload_outlined, text: '200 resource added'),
+                        SizedBox(height: 12),
+                        _InfoRow(icon: Icons.edit_outlined, text: 'Changed 15 resources'),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -145,7 +140,7 @@ class ProfilePage extends ConsumerWidget {
 
           const SizedBox(height: 24),
 
-          // ── Logout button ──
+          // ── Log Out button ──
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: SizedBox(
@@ -196,8 +191,7 @@ class ProfilePage extends ConsumerWidget {
               Navigator.of(context).pop();
               context.go(RouteNames.login);
             },
-            child: const Text('Log Out',
-                style: TextStyle(color: Colors.red)),
+            child: const Text('Log Out', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -217,14 +211,11 @@ class _InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: const Color(0xFF444444)),
+        Icon(icon, size: 20, color: const Color(0xFF333333)),
         const SizedBox(width: 10),
         Text(
           text,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Color(0xFF333333),
-          ),
+          style: const TextStyle(fontSize: 14, color: Color(0xFF333333)),
         ),
       ],
     );
@@ -249,30 +240,14 @@ class _BottomNav extends ConsumerWidget {
           height: 64,
           child: Row(
             children: [
-              _NavItem(
-                icon: Icons.home_outlined,
-                label: 'Home',
-                active: false,
-                onTap: () => context.go(RouteNames.dashboard),
-              ),
-              _NavItem(
-                icon: Icons.people_outline_rounded,
-                label: 'Users',
-                active: false,
-                onTap: () => context.go(RouteNames.userManagement),
-              ),
-              _NavItem(
-                icon: Icons.folder_outlined,
-                label: 'Resources',
-                active: false,
-                onTap: () => context.go(RouteNames.uploadResources),
-              ),
-              _NavItem(
-                icon: Icons.person_rounded,
-                label: 'Profile',
-                active: true,
-                onTap: () {},
-              ),
+              _NavItem(icon: Icons.home_outlined, label: 'Home', active: false,
+                  onTap: () => context.go(RouteNames.dashboard)),
+              _NavItem(icon: Icons.people_outline_rounded, label: 'Users', active: false,
+                  onTap: () => context.go(RouteNames.userManagement)),
+              _NavItem(icon: Icons.folder_outlined, label: 'Resources', active: false,
+                  onTap: () => context.go(RouteNames.uploadResources)),
+              _NavItem(icon: Icons.person_rounded, label: 'Profile', active: true,
+                  onTap: () {}),
             ],
           ),
         ),
@@ -310,8 +285,7 @@ class _NavItem extends StatelessWidget {
                 style: TextStyle(
                     fontSize: 11,
                     color: color,
-                    fontWeight:
-                        active ? FontWeight.w700 : FontWeight.w400)),
+                    fontWeight: active ? FontWeight.w700 : FontWeight.w400)),
           ],
         ),
       ),
