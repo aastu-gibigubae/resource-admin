@@ -16,11 +16,11 @@ class ProfilePage extends ConsumerWidget {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // ── Stack: navy header + avatar overlapping bottom ──
+          // ── Stack: navy header + white card overlapping ──
           Stack(
             clipBehavior: Clip.none,
             children: [
-              // Navy background with rounded bottom
+              // Navy background
               Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
@@ -30,12 +30,15 @@ class ProfilePage extends ConsumerWidget {
                     bottomRight: Radius.circular(24),
                   ),
                 ),
-                padding: EdgeInsets.fromLTRB(16, topPadding + 12, 16, 70),
+                height: topPadding + 160,
+                padding: EdgeInsets.fromLTRB(16, topPadding + 12, 16, 0),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GestureDetector(
                       onTap: () => context.go(RouteNames.dashboard),
-                      child: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                      child: const Icon(Icons.arrow_back,
+                          color: Colors.white, size: 24),
                     ),
                     const SizedBox(width: 10),
                     const Text(
@@ -50,9 +53,69 @@ class ProfilePage extends ConsumerWidget {
                 ),
               ),
 
-              // Avatar overlapping the bottom of navy
+              // White card — starts halfway up the navy, extends below
               Positioned(
-                bottom: -45,
+                top: topPadding + 90,
+                left: 16,
+                right: 16,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFFEEEEEE)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 60, 20, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Yohannis Tesfaye',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: _navy,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'yohannistesfaye@gmail.com',
+                        style: TextStyle(
+                            fontSize: 13, color: Color(0xFF888888)),
+                      ),
+                      const SizedBox(height: 20),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _InfoRow(
+                                icon: Icons.shield_outlined, text: 'Admin'),
+                            SizedBox(height: 12),
+                            _InfoRow(
+                                icon: Icons.upload_outlined,
+                                text: '200 resource added'),
+                            SizedBox(height: 12),
+                            _InfoRow(
+                                icon: Icons.edit_outlined,
+                                text: 'Changed 15 resources'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Avatar — on top of the card's top edge
+              Positioned(
+                top: topPadding + 50,
                 left: 0,
                 right: 0,
                 child: Center(
@@ -64,81 +127,15 @@ class ProfilePage extends ConsumerWidget {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 4),
                     ),
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 50,
-                    ),
+                    child: const Icon(Icons.person,
+                        color: Colors.white, size: 50),
                   ),
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 55),
-
-          // ── White profile card ──
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFEEEEEE)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Name
-                  const Text(
-                    'Yohannis Tesfaye',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: _navy,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  // Email
-                  const Text(
-                    'yohannistesfaye@gmail.com',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Color(0xFF888888),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Info rows — left aligned
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _InfoRow(icon: Icons.shield_outlined, text: 'Admin'),
-                        SizedBox(height: 12),
-                        _InfoRow(icon: Icons.upload_outlined, text: '200 resource added'),
-                        SizedBox(height: 12),
-                        _InfoRow(icon: Icons.edit_outlined, text: 'Changed 15 resources'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 24),
+          const SizedBox(height: 230),
 
           // ── Log Out button ──
           Padding(
