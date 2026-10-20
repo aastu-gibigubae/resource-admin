@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/router/route_names.dart';
+import '../../../admin_auth/providers/auth_provider.dart';
 
 const _navy = Color(0xFF0D2B6E);
 
@@ -11,6 +12,9 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final topPadding = MediaQuery.of(context).padding.top;
+    final authState = ref.watch(authProvider);
+    final name = authState.user?.name ?? 'Admin';
+    final email = authState.user?.email ?? '';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -75,18 +79,18 @@ class ProfilePage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Yohannis Tesfaye',
-                        style: TextStyle(
+                      Text(
+                        name,
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: _navy,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
-                        'yohannistesfaye@gmail.com',
-                        style: TextStyle(
+                      Text(
+                        email,
+                        style: const TextStyle(
                             fontSize: 13, color: Color(0xFF888888)),
                       ),
                       const SizedBox(height: 20),
@@ -144,7 +148,7 @@ class ProfilePage extends ConsumerWidget {
               width: double.infinity,
               height: 52,
               child: OutlinedButton.icon(
-                onPressed: () => _onLogout(context),
+                onPressed: () => _onLogout(context, ref),
                 icon: const Icon(Icons.logout, color: Colors.red, size: 20),
                 label: const Text(
                   'Log Out',
@@ -172,7 +176,7 @@ class ProfilePage extends ConsumerWidget {
     );
   }
 
-  void _onLogout(BuildContext context) {
+  void _onLogout(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -184,9 +188,10 @@ class ProfilePage extends ConsumerWidget {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.of(context).pop();
-              context.go(RouteNames.login);
+              await ref.read(authProvider.notifier).logout();
+              if (context.mounted) context.go(RouteNames.login);
             },
             child: const Text('Log Out', style: TextStyle(color: Colors.red)),
           ),

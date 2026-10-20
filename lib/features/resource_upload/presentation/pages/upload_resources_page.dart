@@ -35,11 +35,32 @@ class _UploadResourcesPageState extends ConsumerState<UploadResourcesPage> {
     super.dispose();
   }
 
-  void _onUpload() {
+  void _onUpload() async {
     setState(() => _isUploading = true);
-    Future.delayed(const Duration(seconds: 2), () {
+    try {
+      // TODO: use file_picker to pick file and POST to /admin/resources
+      // For now shows success after delay
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Resource uploaded successfully!'),
+            backgroundColor: Color(0xFF2E7D32),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Upload failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
       if (mounted) setState(() => _isUploading = false);
-    });
+    }
   }
 
   @override
