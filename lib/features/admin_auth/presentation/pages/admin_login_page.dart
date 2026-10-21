@@ -59,11 +59,6 @@ class _AdminLoginPageState extends ConsumerState<AdminLoginPage> {
     });
   }
 
-  // DEV BYPASS — remove when real credentials are available
-  void _devBypass() {
-    context.go(RouteNames.dashboard);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -339,20 +334,6 @@ class _AdminLoginPageState extends ConsumerState<AdminLoginPage> {
                         fontSize: 13,
                         color: Color(0xFF888888),
                         height: 1.5,
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // DEV BYPASS — remove when real credentials are available
-                    TextButton(
-                      onPressed: _devBypass,
-                      child: const Text(
-                        '[Dev] Skip Login → Dashboard',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFFAAAAAA),
-                        ),
                       ),
                     ),
 
